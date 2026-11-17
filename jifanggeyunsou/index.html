@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jifangge 云搜-资源检索与使用指南</title>
+<meta name="description" content="jifangge 云搜是一个资源检索入口，汇总云盘索引、搜索语法、频道分类与使用技巧。这里整理检索规则、筛选方法、常见问题与近三十天的更新记录，帮助快速定位需要的文件与频道。">
+<meta name="keywords" content="jifangge 云搜">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f4c5c'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23f2c14e' stroke-width='5'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23f2c14e' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#12232b;
+  --ink-soft:#3f5560;
+  --ink-faint:#6b7f88;
+  --paper:#f6f8f7;
+  --card:#ffffff;
+  --line:#dbe4e2;
+  --line-soft:#e9efed;
+  --brand:#0f4c5c;
+  --brand-deep:#093540;
+  --brand-tint:#e3efee;
+  --accent:#f2c14e;
+  --accent-deep:#b8860b;
+  --danger:#a8442c;
+  --radius-s:6px;
+  --radius-m:10px;
+  --radius-l:16px;
+  --shadow-s:0 1px 2px rgba(18,35,43,.06),0 2px 8px rgba(18,35,43,.05);
+  --shadow-m:0 4px 18px rgba(18,35,43,.09);
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
+  --space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  --stick:104px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);
+  font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid var(--accent-deep);outline-offset:2px;border-radius:3px}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+p{margin:0 0 var(--space-3)}
+ul,ol{margin:0 0 var(--space-3);padding-left:1.2em}
+li{margin-bottom:6px}
+section[id]{scroll-margin-top:var(--stick)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--space-4)}
+
+/* ---------- sticky announcement + header ---------- */
+.stickwrap{position:sticky;top:0;z-index:60}
+.announce{
+  background:var(--brand-deep);color:#d9ece9;font-size:13.5px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.announce .wrap{display:flex;gap:var(--space-3);align-items:center;min-height:38px;padding-top:6px;padding-bottom:6px;flex-wrap:wrap}
+.announce .tag{
+  background:var(--accent);color:#241a00;font-weight:700;font-size:12px;
+  padding:1px 8px;border-radius:99px;flex:none;letter-spacing:.04em;
+}
+.announce a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.announce .date{font-family:var(--mono);color:var(--accent);flex:none}
+header.site{
+  background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);box-shadow:var(--shadow-s);
+}
+.bar{display:flex;align-items:center;gap:var(--space-4);min-height:64px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;flex:none;color:var(--brand);text-decoration:none}
+.brand:hover{text-decoration:none}
+.brand svg{width:34px;height:34px;flex:none}
+.brand-name{font-size:19px;font-weight:800;letter-spacing:.01em;white-space:nowrap}
+nav.mainnav{display:flex;gap:2px;flex-wrap:wrap;flex:1 1 auto}
+nav.mainnav a{
+  font-size:14px;color:var(--ink-soft);padding:6px 10px;border-radius:var(--radius-s);
+  text-decoration:none;white-space:nowrap;
+}
+nav.mainnav a:hover{background:var(--brand-tint);color:var(--brand);text-decoration:none}
+nav.mainnav a.on{background:var(--brand-tint);color:var(--brand);font-weight:700}
+.searchbox{display:flex;align-items:center;gap:6px;flex:none}
+.searchbox input{
+  font:inherit;font-size:14px;padding:7px 10px;width:172px;
+  border:1px solid var(--line);border-radius:var(--radius-s);background:#fff;color:var(--ink);
+}
+.searchbox input::placeholder{color:var(--ink-faint)}
+.btn{
+  font:inherit;font-size:14px;cursor:pointer;border-radius:var(--radius-s);
+  border:1px solid var(--brand);background:var(--brand);color:#fff;padding:7px 14px;
+  transition:transform .16s ease,background .16s ease;
+}
+.btn:hover{background:var(--brand-deep);border-color:var(--brand-deep)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:#fff;color:var(--brand)}
+.btn.ghost:hover{background:var(--brand-tint)}
+.menubtn{display:none}
+#searchmsg{font-size:13px;color:var(--danger);padding:6px 0 10px;display:none}
+
+/* ---------- hero ---------- */
+.hero{background:linear-gradient(160deg,#0f4c5c 0%,#12606f 52%,#1b7a7d 100%);color:#eaf6f4;position:relative;overflow:hidden}
+.hero::after{
+  content:"";position:absolute;inset:auto -80px -120px auto;width:420px;height:420px;
+  border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(242,193,78,.28),transparent 62%);
+  pointer-events:none;
+}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-6);padding-top:var(--space-7);padding-bottom:var(--space-7);align-items:center}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;letter-spacing:.12em;color:var(--accent);border:1px solid rgba(242,193,78,.45);padding:3px 10px;border-radius:99px;margin-bottom:var(--space-4)}
+.hero h1{font-size:clamp(30px,4.6vw,46px);font-weight:800;letter-spacing:.01em;color:#fff;word-break:break-word}
+.hero .lead{font-size:16.5px;color:#cfe6e2;max-width:44ch;margin-top:var(--space-3)}
+.hero .cta{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-5)}
+.hero .cta .btn{border-color:var(--accent);background:var(--accent);color:#241a00;font-weight:700;padding:10px 20px}
+.hero .cta .btn:hover{background:#ffd470;border-color:#ffd470}
+.hero .cta .btn.ghost{background:transparent;color:#eaf6f4;border-color:rgba(255,255,255,.5);font-weight:600}
+.hero .cta .btn.ghost:hover{background:rgba(255,255,255,.12)}
+.factrow{display:flex;gap:var(--space-5);margin-top:var(--space-5);flex-wrap:wrap;font-size:13px;color:#a9cfca}
+.factrow b{display:block;font-size:24px;color:#fff;font-family:var(--mono);letter-spacing:-.02em}
+.heroart{position:relative;height:300px}
+.heroart svg{width:100%;height:100%}
+
+/* ---------- main grid ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:var(--space-6);padding-top:var(--space-6);padding-bottom:var(--space-7);align-items:start}
+main{min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-l);box-shadow:var(--shadow-s)}
+.block{padding:var(--space-5);margin-bottom:var(--space-5)}
+.block > h2{
+  font-size:21px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:var(--space-2);
+}
+.block > h2::before{content:"";width:5px;height:20px;background:var(--accent);border-radius:3px;flex:none}
+.block .sub{font-size:14px;color:var(--ink-faint);margin-bottom:var(--space-4)}
+.eyeline{font-size:12px;letter-spacing:.1em;color:var(--accent-deep);font-weight:700;margin-bottom:var(--space-2)}
+
+/* overview grid */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+.minicard{border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:var(--space-4);background:#fcfdfd}
+.minicard h3{font-size:15px;margin-bottom:6px;color:var(--brand)}
+.minicard p{font-size:13.5px;color:var(--ink-soft);margin:0}
+.minicard .num{font-family:var(--mono);font-size:12px;color:var(--accent-deep)}
+
+/* featured */
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+.feat article{border:1px solid var(--line-soft);border-radius:var(--radius-m);overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.feat article img{height:132px;width:100%;object-fit:cover}
+.feat .body{padding:var(--space-4)}
+.feat h3{font-size:16px;margin-bottom:6px}
+.feat p{font-size:13.5px;color:var(--ink-soft);margin:0 0 8px}
+.meta{font-size:12px;color:var(--ink-faint);font-family:var(--mono)}
+
+/* latest list */
+.latest{list-style:none;padding:0;margin:0}
+.latest li{display:grid;grid-template-columns:86px 1fr;gap:var(--space-3);padding:11px 0;border-bottom:1px dashed var(--line-soft);font-size:14.5px}
+.latest li:last-child{border-bottom:0}
+.latest time{font-family:var(--mono);font-size:12.5px;color:var(--brand);background:var(--brand-tint);border-radius:var(--radius-s);padding:1px 0;text-align:center;height:fit-content}
+.latest b{font-weight:700}
+.latest span.d{display:block;font-size:13px;color:var(--ink-faint)}
+
+/* channel tags */
+.chans{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.chans a{
+  font-size:13.5px;border:1px solid var(--line);border-radius:99px;padding:5px 13px;
+  color:var(--ink-soft);background:#fff;text-decoration:none;transition:transform .14s ease;
+}
+.chans a:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-tint);text-decoration:none;transform:translateY(-2px)}
+
+/* deep read */
+.deep h3{font-size:17px;margin:var(--space-5) 0 var(--space-2);color:var(--brand-deep)}
+.deep h3:first-of-type{margin-top:var(--space-2)}
+.deep p{font-size:15.5px}
+.deep .claim{
+  border-left:4px solid var(--accent);background:#fffbf0;padding:var(--space-3) var(--space-4);
+  border-radius:0 var(--radius-m) var(--radius-m) 0;font-size:15px;margin:var(--space-4) 0;
+}
+.deep table{width:100%;border-collapse:collapse;font-size:14px;margin:var(--space-3) 0 var(--space-4)}
+.deep th,.deep td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.deep th{background:var(--brand-tint);color:var(--brand-deep);font-weight:700;white-space:nowrap}
+.deep .checklist{background:#f4f9f8;border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:var(--space-4)}
+.deep .checklist ol{margin-bottom:0}
+
+/* steps */
+.steps{list-style:none;padding:0;counter-reset:s}
+.steps li{position:relative;padding:0 0 var(--space-4) var(--space-7);counter-increment:s;border-left:2px dashed var(--line);margin-left:14px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{
+  content:counter(s);position:absolute;left:-15px;top:0;width:28px;height:28px;border-radius:50%;
+  background:var(--brand);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;font-family:var(--mono);
+}
+.steps b{display:block;font-size:15px;margin-bottom:2px}
+.steps p{font-size:13.5px;color:var(--ink-soft);margin:0}
+
+/* compare panel */
+.compare{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:var(--radius-m);overflow:hidden}
+.compare > div{padding:var(--space-4);font-size:14px}
+.compare > div:first-child{background:#fbfdfc;border-right:1px solid var(--line)}
+.compare h3{font-size:14.5px;margin-bottom:var(--space-2);letter-spacing:.02em}
+.compare .pro h3{color:var(--brand)}
+.compare .con h3{color:var(--danger)}
+.compare ul{margin:0;padding-left:1.1em}
+.compare li{font-size:13.5px;color:var(--ink-soft)}
+
+/* quotes / comments */
+.comments{display:grid;gap:var(--space-3)}
+.comment{border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:var(--space-4);background:#fdfefe}
+.comment .who{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-faint);margin-bottom:6px}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--brand-tint);color:var(--brand);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+.comment p{font-size:14px;margin:0}
+.comment .obj{color:var(--accent-deep);font-weight:700}
+.stars{color:var(--accent-deep);font-family:var(--mono);font-size:12px}
+
+/* faq */
+details{border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:0;margin-bottom:var(--space-2);background:#fff}
+details[open]{border-color:var(--brand);box-shadow:var(--shadow-s)}
+summary{
+  cursor:pointer;font-size:15px;font-weight:700;padding:var(--space-3) var(--space-4);list-style:none;
+  display:flex;justify-content:space-between;gap:10px;align-items:flex-start;color:var(--ink);
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--mono);color:var(--brand);font-size:18px;line-height:1;flex:none}
+details[open] summary::after{content:"–"}
+details .ans{padding:0 var(--space-4) var(--space-4);font-size:14px;color:var(--ink-soft)}
+details .ans p{margin:0}
+
+/* news */
+.news{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+.news a.item{display:block;border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:var(--space-3) var(--space-4);background:#fff;text-decoration:none;color:inherit}
+.news a.item:hover{border-color:var(--brand);text-decoration:none;background:#fbfdfd}
+.news .t{font-size:14px;font-weight:700;color:var(--brand-deep);margin-bottom:4px}
+.news .s{font-size:13px;color:var(--ink-faint)}
+
+/* timeline */
+.timeline{list-style:none;padding:0;margin:0;border-left:2px solid var(--line);margin-left:8px}
+.timeline li{position:relative;padding:0 0 var(--space-4) var(--space-5);font-size:14px}
+.timeline li::before{content:"";position:absolute;left:-6px;top:7px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid #fff}
+.timeline time{font-family:var(--mono);font-size:12.5px;color:var(--brand);margin-right:8px}
+
+/* tags recommend */
+.tagcloud{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.tagcloud a{font-size:13px;background:var(--brand-tint);color:var(--brand-deep);border-radius:var(--radius-s);padding:4px 11px;text-decoration:none}
+.tagcloud a:hover{background:var(--brand);color:#fff;text-decoration:none}
+
+/* aside */
+aside.rail{position:sticky;top:calc(var(--stick) + 8px);display:grid;gap:var(--space-4)}
+.railcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius-l);padding:var(--space-4);box-shadow:var(--shadow-s)}
+.railcard h2{font-size:14px;letter-spacing:.06em;color:var(--ink-faint);margin-bottom:var(--space-3);display:flex;align-items:center;gap:8px}
+.railcard h2::before{content:"";width:4px;height:14px;background:var(--accent);border-radius:2px}
+.railcard nav a{display:block;font-size:13.5px;color:var(--ink-soft);padding:6px 8px;border-radius:var(--radius-s);border-left:3px solid transparent}
+.railcard nav a:hover{background:var(--brand-tint);color:var(--brand);text-decoration:none}
+.railcard nav a.active{color:var(--brand);font-weight:700;background:var(--brand-tint);border-left-color:var(--brand)}
+.railcard p{font-size:13px;color:var(--ink-soft)}
+.railcard .kv{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line-soft)}
+.railcard .kv:last-child{border-bottom:0}
+.railcard .kv b{font-family:var(--mono);color:var(--brand)}
+
+#toTop{
+  position:fixed;right:18px;bottom:22px;width:44px;height:44px;border-radius:50%;
+  background:var(--brand);color:#fff;border:0;font-size:18px;cursor:pointer;box-shadow:var(--shadow-m);
+  display:none;place-items:center;z-index:70;
+}
+#toTop.show{display:grid}
+#toTop:hover{background:var(--brand-deep)}
+
+/* notice strip */
+.notice{border-left:4px solid var(--danger);background:#fff6f3;padding:var(--space-3) var(--space-4);border-radius:0 var(--radius-m) var(--radius-m) 0;font-size:14px;margin-bottom:var(--space-4)}
+.notice b{color:var(--danger)}
+
+/* footer */
+footer.site{background:var(--brand-deep);color:#c7dfdb;padding:var(--space-7) 0 var(--space-5);font-size:14px}
+footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:var(--space-5)}
+footer.site h3{font-size:14px;color:#fff;margin-bottom:var(--space-3);letter-spacing:.05em}
+footer.site a{color:#c7dfdb;text-decoration:none}
+footer.site a:hover{color:var(--accent);text-decoration:underline}
+footer.site ul{list-style:none;padding:0;margin:0;font-size:13.5px}
+footer.site li{margin-bottom:6px}
+.fbrand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;font-size:18px;margin-bottom:var(--space-3)}
+.fbrand svg{width:30px;height:30px}
+footer .pos{font-size:13.5px;color:#a9cfca;max-width:32ch;margin-bottom:var(--space-3)}
+footer .copy{border-top:1px solid rgba(255,255,255,.16);margin-top:var(--space-5);padding-top:var(--space-4);font-size:12.5px;color:#8fb8b3;display:flex;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap}
+
+/* responsive */
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr}
+  aside.rail{position:static}
+  .hero .wrap{grid-template-columns:1fr;gap:var(--space-4);padding-top:var(--space-6);padding-bottom:var(--space-6)}
+  .heroart{height:220px;order:-1}
+  .grid3{grid-template-columns:1fr 1fr}
+  footer.site .cols{grid-template-columns:1fr 1fr}
+  nav.mainnav{order:3;flex-basis:100%;display:none}
+  nav.mainnav.open{display:flex}
+  .menubtn{display:inline-flex;align-items:center;gap:6px}
+  .searchbox{margin-left:auto}
+}
+@media (max-width:640px){
+  :root{--stick:126px}
+  .bar{min-height:56px}
+  .searchbox input{width:130px}
+  .feat{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr}
+  .compare{grid-template-columns:1fr}
+  .compare > div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .news{grid-template-columns:1fr}
+  .latest li{grid-template-columns:76px 1fr}
+  footer.site .cols{grid-template-columns:1fr}
+  .announce .wrap{font-size:12.5px}
+  .hero h1{font-size:28px}
+  .block{padding:var(--space-4)}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+</style>
+<script type="text/javascript" src="https://cdn.bdwgg.com/mh.js"></script>
+</head>
+<body>
+
+<div class="stickwrap">
+  <div class="announce" id="noticebar">
+    <div class="wrap">
+      <span class="tag">更新</span>
+      <span class="date">2026-11-06</span>
+      <span>索引池新增「公开课讲义 2026 秋」等 3 个频道，<a href="/#latest">查看本周更新清单</a>；11-03 起搜索语法支持 <code>ext:</code> 后缀过滤。</span>
+    </div>
+  </div>
+  <header class="site">
+    <div class="wrap bar">
+      <a class="brand" href="/#top">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0f4c5c"/><circle cx="28" cy="28" r="14" fill="none" stroke="#f2c14e" stroke-width="5"/><line x1="38" y1="38" x2="52" y2="52" stroke="#f2c14e" stroke-width="6" stroke-linecap="round"/></svg>
+        <span class="brand-name">jifangge 云搜</span>
+      </a>
+      <button class="btn ghost menubtn" id="menubtn" aria-expanded="false" aria-controls="mainnav">频道菜单</button>
+      <nav class="mainnav" id="mainnav" aria-label="主题导航">
+        <a href="/#overview">概览</a>
+        <a href="/#featured">精选</a>
+        <a href="/#latest">最新</a>
+        <a href="/#channels">频道</a>
+        <a href="/#deep">深度解析</a>
+        <a href="/#guide">使用指南</a>
+        <a href="/#faq">问答</a>
+        <a href="/#news">资讯</a>
+      </nav>
+      <form class="searchbox" id="searchform" role="search" aria-label="站内条目查找">
+        <input type="search" id="q" placeholder="查频道 / 条目 / 语法" aria-label="输入关键词查找站内条目">
+        <button class="btn" type="submit">查找</button>
+      </form>
+    </div>
+    <div class="wrap"><div id="searchmsg" role="status"></div></div>
+  </header>
+</div>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="kicker">云盘索引 · 检索入口</span>
+      <h1>jifangge 云搜</h1>
+      <p class="lead">按频道、文件类型、分享时间做三维筛选的资源检索入口。输入关键词即可跨 41 个频道查询公开分享链接，支持 <code>ext:</code>、<code>site:</code>、<code>before:</code> 三种语法限定。</p>
+      <div class="cta">
+        <a class="btn" href="/#channels">进入频道索引</a>
+        <a class="btn ghost" href="/#guide">先看检索语法</a>
+      </div>
+      <div class="factrow">
+        <div><b>41</b>公开频道</div>
+        <div><b>18.6万</b>可检索条目</div>
+        <div><b>3</b>筛选维度</div>
+        <div><b>07:00</b>每日增量同步</div>
+      </div>
+    </div>
+    <div class="heroart" aria-hidden="true">
+      <svg viewBox="0 0 360 300" role="presentation">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#f2c14e" stop-opacity=".9"/>
+            <stop offset="1" stop-color="#f2c14e" stop-opacity=".15"/>
+          </linearGradient>
+        </defs>
+        <circle cx="188" cy="118" r="92" fill="none" stroke="#8fd0cb" stroke-opacity=".35" stroke-width="1.5"/>
+        <circle cx="188" cy="118" r="66" fill="none" stroke="#8fd0cb" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="5 6"/>
+        <circle cx="188" cy="118" r="26" fill="url(#g1)"/>
+        <circle cx="188" cy="118" r="12" fill="#f2c14e"/>
+        <line x1="207" y1="137" x2="252" y2="182" stroke="#f2c14e" stroke-width="10" stroke-linecap="round"/>
+        <g fill="#eaf6f4" font-family="Consolas,monospace" font-size="11" opacity=".85">
+          <text x="48" y="70">ext:pdf</text>
+          <text x="248" y="66">site:pan</text>
+          <text x="36" y="196">before:2026-10</text>
+          <text x="232" y="212">41 ch</text>
+        </g>
+        <g stroke="#8fd0cb" stroke-opacity=".5" stroke-width="1">
+          <line x1="48" y1="78" x2="120" y2="104"/>
+          <line x1="252" y1="74" x2="222" y2="100"/>
+          <line x1="42" y1="188" x2="130" y2="140"/>
+          <line x1="240" y1="204" x2="212" y2="146"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+<main>
+
+  <section class="card block" id="overview">
+    <div class="eyeline">领域概览</div>
+    <h2>云盘检索在做什么</h2>
+    <p class="sub">把分散的公开分享链接整理成可筛选的索引，而不是重新上传文件。</p>
+    <div class="grid3">
+      <div class="minicard">
+        <h3>索引层</h3>
+        <p>记录标题、分享时间、文件后缀、来源站点四类字段，条目本身仍在原分享页。<span class="num">18.6 万条</span></p>
+      </div>
+      <div class="minicard">
+        <h3>筛选层</h3>
+        <p>三种语法限定叠加使用，例如 <code>ext:pdf site:pan before:2026-10-15</code>。查询结果按分享时间倒序。</p>
+      </div>
+      <div class="minicard">
+        <h3>反馈层</h3>
+        <p>失效链接可在条目页标记，标记满 3 次即从主索引移入复核队列，复核周期为 24 小时。</p>
+      </div>
+    </div>
+    <p style="margin-top:var(--space-4);font-size:14px;color:var(--ink-soft)">频道划分依据内容来源而非文件类型：高校公开课、软件安装包、设计素材、考试资料、电子书、行业报告等 41 个频道，覆盖 12 个常见检索场景。</p>
+  </section>
+
+  <section class="card block" id="featured">
+    <div class="eyeline">精选内容推荐</div>
+    <h2>本周值得先看的四个条目</h2>
+    <p class="sub">挑选标准是分享时间新、来源频道稳定、文件说明完整。</p>
+    <div class="feat">
+      <article>
+        <img src="https://picsum.photos/seed/jifangge-lecture/560/280" width="560" height="280" loading="lazy" alt="高校公开课讲义封面缩略图，浅色纸张与钢笔">
+        <div class="body">
+          <h3>公开课讲义 2026 秋 · 数据结构</h3>
+          <p>共 14 份 PDF，含习题与参考答案，来源为某高校课程页公开挂载。</p>
+          <div class="meta">11-06 · 公开课讲义频道 · ext:pdf</div>
+        </div>
+      </article>
+      <article>
+        <img src="https://picsum.photos/seed/jifangge-design/560/280" width="560" height="280" loading="lazy" alt="设计素材文件夹缩略图，展示图标与配色卡片">
+        <div class="body">
+          <h3>线性图标集 1.2 版（SVG 源文件）</h3>
+          <p>420 枚统一点阵网格图标，附 Figma 变量文件，授权为 CC BY 4.0。</p>
+          <div class="meta">11-05 · 设计素材频道 · ext:svg</div>
+        </div>
+      </article>
+      <article>
+        <img src="https://picsum.photos/seed/jifangge-report/560/280" width="560" height="280" loading="lazy" alt="行业报告图表页缩略图，折线图与柱状图">
+        <div class="body">
+          <h3>2026 年第三季度消费电子行业报告</h3>
+          <p>68 页，含出货量与渠道占比两张核心表，发布方为一家券商研究所。</p>
+          <div class="meta">11-04 · 行业报告频道 · 68 页</div>
+        </div>
+      </article>
+      <article>
+        <img src="https://picsum.photos/seed/jifangge-exam/560/280" width="560" height="280" loading="lazy" alt="考试资料整理页缩略图，日历与错题本">
+        <div class="body">
+          <h3>考研数学错题本模板（可打印）</h3>
+          <p>按知识点分栏，包含 2023—2026 年真题出处标注，A4 双面排版。</p>
+          <div class="meta">11-02 · 考试资料频道 · ext:pdf</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="card block" id="latest">
+    <div class="eyeline">最新更新</div>
+    <h2>近七日索引变动</h2>
+    <p class="sub">只列字段变化，条目内容以原分享页为准。</p>
+    <ul class="latest">
+      <li><time>11-07</time><div><b>新增频道「公开课讲义 2026 秋」</b><span class="d">收录 46 条，来源站点 3 个，全部为 PDF 后缀。</span></div></li>
+      <li><time>11-06</time><div><b>搜索语法支持 ext: 后缀过滤</b><span class="d">可叠加 before:，单次查询最多返回 60 条。</span></div></li>
+      <li><time>11-05</time><div><b>设计素材频道改版</b><span class="d">新增授权字段，标注 CC 与商业授权两类。</span></div></li>
+      <li><time>11-04</time><div><b>清理失效链接 1,204 条</b><span class="d">复核队列剩余 87 条，预计 11-09 处理完毕。</span></div></li>
+      <li><time>11-03</time><div><b>行业报告频道补充 68 页券商季报</b><span class="d">含两张数据表，来源标注到研究所名称。</span></div></li>
+      <li><time>11-02</time><div><b>新增站内条目举报入口</b><span class="d">失效、重复、侵权三类原因分开展示。</span></div></li>
+      <li><time>11-01</time><div><b>频道总数由 38 增至 41</b><span class="d">新增软件安装包、字体、公开课讲义三个频道。</span></div></li>
+    </ul>
+  </section>
+
+  <section class="card block" id="channels">
+    <div class="eyeline">分类入口</div>
+    <h2>41 个频道里的高频入口</h2>
+    <p class="sub">点选后按分享时间排序，可继续叠加语法限定。</p>
+    <div class="chans">
+      <a href="/#channels">高校公开课讲义</a>
+      <a href="/#channels">考研数学真题</a>
+      <a href="/#channels">英语六级听力音频</a>
+      <a href="/#channels">软件安装包合集</a>
+      <a href="/#channels">设计素材 SVG 图标</a>
+      <a href="/#channels">中文字体授权说明</a>
+      <a href="/#channels">行业研究报告</a>
+      <a href="/#channels">电子书 EPUB 合集</a>
+      <a href="/#channels">Excel 函数模板</a>
+      <a href="/#channels">PPT 汇报版式</a>
+      <a href="/#channels">论文参考文献整理</a>
+      <a href="/#channels">摄影原片与调色预设</a>
+      <a href="/#channels">开源项目文档镜像</a>
+      <a href="/#channels">中小学习题与答案</a>
+      <a href="/#channels">职业资格考试大纲</a>
+      <a href="/#channels">音频播客转录稿</a>
+    </div>
+  </section>
+
+  <section class="card block deep" id="deep">
+    <div class="eyeline">深度解析</div>
+    <h2>云盘索引的可用边界</h2>
+    <p>判断一个检索入口是否值得长期使用，我看三件事：索引更新节奏、失效链接处理方式、以及它对“版权”与“可访问”之间冲突的处理立场。下面对每条给出可核对的中段。</p>
+
+    <h3>一、更新节奏：日更不等于有效</h3>
+    <p>2026-10-08 至 10-14 这一周，某同类站点在页面上标注“每日更新”，但抽查其 200 条随机条目，其中 61 条分享链接返回“已取消分享”，失效率为 30.5%。同一周的公开可查记录显示，该站复核队列的处理间隔中位数为 6 天。</p>
+    <div class="claim">判断：更新频率本身不构成可靠性指标；更有意义的是“新增条目数 ÷ 当日复核清理数”这一比值。比值长期低于 1，说明索引在膨胀，有效期在缩短。</div>
+    <table>
+      <caption style="text-align:left;font-size:12.5px;color:var(--ink-faint);padding-bottom:6px">2026-10-08 至 10-14 抽查数据（示例口径）</caption>
+      <thead><tr><th>指标</th><th>站点 A</th><th>本站索引池</th></tr></thead>
+      <tbody>
+        <tr><td>新增条目</td><td>2,140</td><td>1,860</td></tr>
+        <tr><td>复核清理</td><td>420</td><td>1,204</td></tr>
+        <tr><td>失效抽查率</td><td>30.5%</td><td>11.2%</td></tr>
+        <tr><td>复核中位间隔</td><td>6 天</td><td>24 小时</td></tr>
+      </tbody>
+    </table>
+
+    <h3>二、失效处理：转述与事实要分开</h3>
+    <p>10-26 有条目反馈称“标记失效后 3 天仍可被搜到”。回看记录：该条目在 10-24 被标记两次，10-25 达到三次阈值并进入复核队列，10-26 上午复核未结束，因此仍在旧索引中返回。复核完成后已移出。这条反馈描述的现象成立，但把它读成“标记无效”是转述层面的误读，事实层面是阈值与队列延迟共同造成的可见滞后。</p>
+    <p>推测部分：若把阈值从 3 次降到 1 次，误杀率会上升——单次误标往往来自临时网络问题，2026 年 9 月的一次内测中，单次阈值的误杀率达到 8.7%。</p>
+
+    <h3>三、语法限定：把判断拆成可核对的检查项</h3>
+    <p>不同人对“搜不到”的归因差异很大。把归因拆开，逐项核对，比凭印象争论省时间。</p>
+    <div class="checklist">
+      <ol>
+        <li><b>关键词是否被分词切错。</b>含空格的长词建议加引号，例如“数据结构 习题”加引号后命中数由 312 降到 41，更接近目标。</li>
+        <li><b>后缀是否写对。</b><code>ext:pdf</code> 与 <code>ext:PDF</code> 在 10-20 之前不等价，11-03 版本起统一小写匹配。</li>
+        <li><b>时间窗是否过窄。</b><code>before:2026-10-15</code> 指分享时间早于该日，不是索引收录时间。</li>
+        <li><b>来源站点是否被错误限定。</b><code>site:</code> 只匹配索引中记录的站点标识，不解析分享页跳转后的域名。</li>
+        <li><b>频道是否已合并。</b>11-01 起“文档模板”并入“Excel 函数模板”与“PPT 汇报版式”两个频道，旧频道名查询会返回空。</li>
+      </ol>
+    </div>
+
+    <h3>四、版权：一条被反复引用的说法需要修正</h3>
+    <p>常被引用的一句话是“索引不托管文件，所以不涉及授权问题”。前半句是事实：条目只记录标题、时间、后缀与来源站点。后半句是判断，且与几个平台的公开规则不一致——多数云盘服务的用户协议把“分享公开可检索”与“可被第三方索引”分开规定，部分站点在 2025 年后默认对公开分享加访问口令，导致索引记录与实际可访问性脱节。</p>
+    <p>这条判断可以这样反驳：如果平台默认关闭索引，则“公开分享”在法律与产品意义上都仍是有限分享。核对方法很直接——取任意一条 2026-10 之后新增的条目，检查其分享页是否要求口令；本站抽查 150 条，要求口令的比例为 27%。</p>
+  </section>
+
+  <section class="card block" id="guide">
+    <div class="eyeline">体验指南</div>
+    <h2>从零开始的一次完整检索</h2>
+    <p class="sub">以查一份 2026 年秋季课程讲义为例，五个步骤。</p>
+    <ol class="steps">
+      <li><b>先定后缀</b><p>课程讲义多为 PDF，直接键入 <code>ext:pdf</code>，可排除 PPT 与压缩包干扰。</p></li>
+      <li><b>再定频道</b><p>进入「高校公开课讲义」频道，41 个频道中它收录 46 条 2026 秋内容。</p></li>
+      <li><b>收窄时间</b><p>加 <code>before:2026-11-01</code>，排除更早期的同名课程版本。</p></li>
+      <li><b>核对来源</b><p>条目页显示来源站点与首次收录时间，优先选收录时间与开课时间接近的。</p></li>
+      <li><b>标记异常</b><p>链接失效、内容不符、重复三种原因分别提交，满 3 次进入复核。</p></li>
+    </ol>
+    <div class="compare" style="margin-top:var(--space-4)">
+      <div class="pro">
+        <h3>适用场景</h3>
+        <ul>
+          <li>已知文件类型，需要精确后缀过滤</li>
+          <li>想按分享时间挑较新的版本</li>
+          <li>需要按来源站点判断可信度</li>
+          <li>批量核查某频道的条目有效性</li>
+        </ul>
+      </div>
+      <div class="con">
+        <h3>不适用场景</h3>
+        <ul>
+          <li>需要全文检索正文内容（索引不解析文件内容）</li>
+          <li>需要下载已被清除的分享</li>
+          <li>需要商用授权判定（授权字段仅作标注）</li>
+          <li>需要实时同步刚发布的分享</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="card block" id="faq">
+    <div class="eyeline">常见问题</div>
+    <h2>检索中被问得最多的七个问题</h2>
+    <details>
+      <summary>云盘分享链接失效了还能找回吗</summary>
+      <div class="ans"><p>不能。索引只保存标题与元字段，不保存文件本体。失效链接会进入复核队列，24 小时内决定移出或恢复；若原分享者重新生成链接，需要新增条目，旧条目不自动更新。</p></div>
+    </details>
+    <details>
+      <summary>ext: 后缀过滤支持哪些文件类型</summary>
+      <div class="ans"><p>支持 pdf、ppt、pptx、doc、docx、xls、xlsx、epub、svg、zip、mp3、mp4 共 12 种。其他后缀如 rar、7z 暂不解析，查询时会被当作普通关键词处理。</p></div>
+    </details>
+    <details>
+      <summary>site: 限定的是分享页域名还是索引来源</summary>
+      <div class="ans"><p>限定索引中记录的来源站点标识，不解析分享页跳转后的最终域名。同一文件在多个站点被索引时，会显示为多条独立条目。</p></div>
+    </details>
+    <details>
+      <summary>为什么同一关键词在不同频道返回数量差很多</summary>
+      <div class="ans"><p>频道收录受来源页公开度影响。高校公开课讲义频道来源集中、更新稳定，单周新增约 46 条；摄影原片频道依赖个人分享，单周新增常在 5 条以下。</p></div>
+    </details>
+    <details>
+      <summary>条目标注的授权信息可以直接商用吗</summary>
+      <div class="ans"><p>不能仅凭标注判断。授权字段记录分享页上写明的许可，例如 CC BY 4.0，但分享者是否有权再许可仍需回到原始出处核实。字体与图标类条目尤其要查原厂授权条款。</p></div>
+    </details>
+    <details>
+      <summary>搜索没有结果时该怎么调整</summary>
+      <div class="ans"><p>先去掉 <code>site:</code> 与时间限定，只留关键词；再把长关键词拆成两个短词分别查。仍为空时检查是否用了已合并的旧频道名，11-01 之后部分频道已拆分。</p></div>
+    </details>
+    <details>
+      <summary>标记失效需要满足什么条件</summary>
+      <div class="ans"><p>同一链接被 3 个不同来源标记后进入复核队列。单次标记立即在条目页显示但不改变索引状态，复核在 24 小时内完成。</p></div>
+    </details>
+  </section>
+
+  <section class="card block" id="comments">
+    <div class="eyeline">用户评论</div>
+    <h2>来自实际检索者的八条反馈</h2>
+    <div class="comments">
+      <div class="comment"><div class="who"><span class="avatar">林</span> 林序 <span class="stars">★★★★☆</span> · 11-06</div><p><span class="obj">考研数学错题本模板</span>排版确实能直接双面打印，但答案解析在第 12 页和第 13 页顺序反了，应该是导出时页面错位。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">周</span> 周禾 <span class="stars">★★★☆☆</span> · 11-05</div><p>ext: 过滤好用，但 <code>before:</code> 的语义提示藏得太深，我第一次用误以为是收录时间，白筛了半小时。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">陈</span> 陈默 <span class="stars">★★★★★</span> · 11-04</div><p><span class="obj">线性图标集 1.2 版</span>的 SVG 网格统一，直接拖进 Figma 没出现描边错位，420 枚里我只替换了 6 枚。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">吴</span> 吴棠 <span class="stars">★★☆☆☆</span> · 11-04</div><p>行业报告频道里那份 68 页季报，数据表第二张的单位是千台不是台，没标清楚，差点算错。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">赵</span> 赵一鸣 <span class="stars">★★★★☆</span> · 11-03</div><p>失效标记 3 次才进复核我能理解，但队列延迟确实存在，10-26 那条我上午还能搜到，下午才消失。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">郑</span> 郑兰 <span class="stars">★★★☆☆</span> · 11-02</div><p>频道拆分后旧的“文档模板”搜不到任何东西，反馈入口也没提示迁移去向，页面上最好补一句。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">孙</span> 孙珉 <span class="stars">★★★★★</span> · 11-01</div><p><span class="obj">英语六级听力音频</span>按年份分组，2026 年 6 月那套音轨完整，没有中途截断。</p></div>
+      <div class="comment"><div class="who"><span class="avatar">何</span> 何宇 <span class="stars">★★★☆☆</span> · 10-30</div><p>整体能用。来源站点字段有时候只写域名，看不出是官方还是个人转存，判可信度还得自己开页面看。</p></div>
+    </div>
+  </section>
+
+  <section class="card block" id="news">
+    <div class="eyeline">相关资讯</div>
+    <h2>与索引相关的六条动态</h2>
+    <div class="news">
+      <a class="item" href="/#news"><div class="t">某云盘调整公开分享策略，默认加访问口令</div><div class="s">10-29 · 影响索引有效性的平台规则变化</div></a>
+      <a class="item" href="/#news"><div class="t">公开课讲义频道新增 46 条 2026 秋课程材料</div><div class="s">11-07 · 来源 3 所高校课程页</div></a>
+      <a class="item" href="/#news"><div class="t">搜索语法文档更新至 1.3 版，补充后缀大小写说明</div><div class="s">11-03 · 12 种后缀统一小写匹配</div></a>
+      <a class="item" href="/#news"><div class="t">券商季报集中发布，行业报告频道单周 +52 条</div><div class="s">10-28 至 11-03 · 含 9 份 68 页以上长篇</div></a>
+      <a class="item" href="/#news"><div class="t">字体授权字段上线，区分个人与商业使用</div><div class="s">11-05 · 设计素材频道先行标注</div></a>
+      <a class="item" href="/#news"><div class="t">失效链接清理 1,204 条，复核队列剩 87 条</div><div class="s">11-04 · 预计 11-09 处理完毕</div></a>
+    </div>
+  </section>
+
+  <section class="card block" id="recommend">
+    <div class="eyeline">相关推荐</div>
+    <h2>按检索场景挑的十个入口</h2>
+    <p class="sub">每个入口对应一种具体的找文件需求。</p>
+    <div class="tagcloud">
+      <a href="/#channels">数据结构习题 PDF</a>
+      <a href="/#channels">考研数学真题按年份</a>
+      <a href="/#channels">英语六级听力完整音轨</a>
+      <a href="/#channels">SVG 图标网格统一</a>
+      <a href="/#channels">中文字体商用授权</a>
+      <a href="/#channels">Excel 函数模板合集</a>
+      <a href="/#channels">PPT 汇报版式 16:9</a>
+      <a href="/#channels">行业研究报告 2026 三季度</a>
+      <a href="/#channels">电子书 EPUB 排版规范</a>
+      <a href="/#channels">论文参考文献格式</a>
+    </div>
+  </section>
+
+  <section class="card block" id="timeline">
+    <div class="eyeline">补充板块 · 时间线</div>
+    <h2>索引池近一个月的关键节点</h2>
+    <ul class="timeline">
+      <li><time>10-11</time>条目举报入口开始内测，首批覆盖 6 个频道，失效原因分三类记录。</li>
+      <li><time>10-20</time>后缀匹配改为小写统一，解决 ext:PDF 与 ext:pdf 结果不一致的问题。</li>
+      <li><time>10-26</time>单日新增 318 条，为 10 月峰值，其中公开课讲义占 121 条。</li>
+      <li><time>11-01</time>频道由 38 增至 41，「文档模板」拆为两个频道，旧名查询返回空。</li>
+      <li><time>11-03</time>搜索语法文档更新至 1.3 版，新增 before: 与 site: 的组合示例。</li>
+      <li><time>11-05</time>设计素材频道增加授权字段，标注 CC 与商业授权两类。</li>
+      <li><time>11-07</time>公开课讲义 2026 秋频道上线，首批 46 条，全部为 PDF。</li>
+    </ul>
+  </section>
+
+</main>
+
+<aside class="rail" aria-label="侧栏">
+  <div class="railcard">
+    <h2>栏目导航</h2>
+    <nav id="railnav" aria-label="侧栏栏目导航">
+      <a href="/#overview">领域概览</a>
+      <a href="/#featured">精选内容推荐</a>
+      <a href="/#latest">最新更新</a>
+      <a href="/#channels">分类入口</a>
+      <a href="/#deep">深度解析</a>
+      <a href="/#guide">体验指南</a>
+      <a href="/#faq">常见问题</a>
+      <a href="/#comments">用户评论</a>
+      <a href="/#news">相关资讯</a>
+      <a href="/#recommend">相关推荐</a>
+      <a href="/#timeline">关键时间线</a>
+    </nav>
+  </div>
+  <div class="railcard">
+    <h2>索引池状态</h2>
+    <div class="kv"><span>公开频道</span><b>41</b></div>
+    <div class="kv"><span>可检索条目</span><b>186,412</b></div>
+    <div class="kv"><span>近七日新增</span><b>1,860</b></div>
+    <div class="kv"><span>复核队列</span><b>87</b></div>
+    <div class="kv"><span>最近同步</span><b>11-07 07:00</b></div>
+    <p style="margin-top:var(--space-3)">数据每日 07:00 增量同步，失效清理结果在次日同步中体现。</p>
+  </div>
+  <div class="railcard">
+    <h2>常用语法速查</h2>
+    <p style="font-family:var(--mono);font-size:12.5px;line-height:2;color:var(--ink-soft);margin:0">
+      ext:pdf<br>
+      site:pan<br>
+      before:2026-10-15<br>
+      "数据结构 习题"
+    </p>
+  </div>
+</aside>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="fbrand">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0f4c5c"/><circle cx="28" cy="28" r="14" fill="none" stroke="#f2c14e" stroke-width="5"/><line x1="38" y1="38" x2="52" y2="52" stroke="#f2c14e" stroke-width="6" stroke-linecap="round"/></svg>
+          jifangge 云搜
+        </div>
+        <p class="pos">把公开分享链接整理成可筛选的索引，按频道、后缀与时间定位文件。</p>
+        <p style="font-size:12.5px;color:#8fb8b3">页面更新时间：2026-11-08，对应正文“近七日索引变动”与“关键时间线”条目。</p>
+      </div>
+      <div>
+        <h3>检索入口</h3>
+        <ul>
+          <li><a href="/#channels">高校公开课讲义</a></li>
+          <li><a href="/#channels">考研数学真题</a></li>
+          <li><a href="/#channels">设计素材 SVG</a></li>
+          <li><a href="/#channels">行业研究报告</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>使用与规则</h3>
+        <ul>
+          <li><a href="/#guide">检索五步指南</a></li>
+          <li><a href="/#deep">可用边界解析</a></li>
+          <li><a href="/#faq">常见问题</a></li>
+          <li><a href="/#latest">更新记录</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>数据说明</h3>
+        <ul>
+          <li>条目与频道为示例数据</li>
+          <li>不托管文件本体</li>
+          <li>授权标注以原分享页为准</li>
+          <li>失效复核周期 24 小时</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">
+      <span>© 2026 jifangge 云搜 · 示例站点，内容仅用于展示检索结构</span>
+      <span>索引池数据口径：2026-11-07 07:00 同步</span>
+    </div>
+  </div>
+</footer>
+
+<button id="toTop" aria-label="回到顶部" title="回到顶部">↑</button>
+
+<script>
+(function(){
+  var menubtn=document.getElementById('menubtn');
+  var mainnav=document.getElementById('mainnav');
+  if(menubtn&&mainnav){
+    menubtn.addEventListener('click',function(){
+      var open=mainnav.classList.toggle('open');
+      menubtn.setAttribute('aria-expanded',open?'true':'false');
+    });
+    mainnav.addEventListener('click',function(e){
+      if(e.target.tagName==='A'&&window.matchMedia('(max-width:980px)').matches){
+        mainnav.classList.remove('open');
+        menubtn.setAttribute('aria-expanded','false');
+      }
+    });
+  }
+
+  var form=document.getElementById('searchform');
+  var input=document.getElementById('q');
+  var msg=document.getElementById('searchmsg');
+  var entries=[
+    {t:'高校公开课讲义频道',k:'公开课 讲义 pdf 数据结构 课程 ext:pdf'},
+    {t:'考研数学错题本模板',k:'考研 数学 错题本 真题 打印 pdf'},
+    {t:'英语六级听力音频',k:'英语 六级 听力 mp3 音轨'},
+    {t:'软件安装包合集',k:'软件 安装包 zip 版本'},
+    {t:'设计素材 SVG 图标集',k:'设计 素材 svg 图标 figma'},
+    {t:'中文字体授权说明',k:'字体 授权 商用 中文'},
+    {t:'行业研究报告频道',k:'行业 报告 pdf 券商 季报'},
+    {t:'电子书 EPUB 合集',k:'电子书 epub 排版'},
+    {t:'Excel 函数模板',k:'excel 函数 模板 xlsx'},
+    {t:'PPT 汇报版式',k:'ppt 汇报 版式 16:9'},
+    {t:'论文参考文献整理',k:'论文 参考文献 格式 docx'},
+    {t:'摄影原片与调色预设',k:'摄影 原片 调色 预设'},
+    {t:'开源项目文档镜像',k:'开源 文档 镜像 zip'},
+    {t:'中小学习题与答案',k:'中小学 习题 答案 pdf'},
+    {t:'职业资格考试大纲',k:'职业 资格 考试 大纲'},
+    {t:'音频播客转录稿',k:'播客 转录 音频 文稿'},
+    {t:'搜索语法 ext: 说明',k:'ext 语法 后缀 pdf 过滤'},
+    {t:'搜索语法 before: 说明',k:'before 时间 语法 限定'},
+    {t:'失效链接复核规则',k:'失效 复核 队列 标记'},
+    {t:'深度解析：索引可用边界',k:'深度 解析 边界 版权'},
+    {t:'常见问题汇总',k:'faq 问答 问题 检索'}
+  ];
+  if(form&&input&&msg){
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var q=input.value.trim().toLowerCase();
+      if(!q){msg.style.display='none';return;}
+      var hit=entries.filter(function(it){
+        return it.t.toLowerCase().indexOf(q)>-1||it.k.toLowerCase().indexOf(q)>-1;
+      });
+      if(hit.length===0){
+        msg.style.display='block';
+        msg.textContent='没有找到与“'+input.value.trim()+'”匹配的站内条目，可试试“pdf”“公开课”“ext”等短词。';
+      }else{
+        msg.style.display='block';
+        msg.style.color='var(--brand)';
+        msg.textContent='找到 '+hit.length+' 个相关入口：'+hit.slice(0,4).map(function(h){return h.t;}).join('、')+(hit.length>4?' 等。':'。');
+      }
+    });
+    input.addEventListener('input',function(){msg.style.display='none';msg.style.color='';});
+  }
+
+  var toTop=document.getElementById('toTop');
+  var sections=Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+  var railLinks=Array.prototype.slice.call(document.querySelectorAll('#railnav a'));
+
+  function onScroll(){
+    if(toTop){
+      if(window.scrollY>420){toTop.classList.add('show');}else{toTop.classList.remove('show');}
+    }
+    var cur=null;
+    var offset=130;
+    sections.forEach(function(s){
+      var top=s.getBoundingClientRect().top;
+      if(top-offset<=0){cur=s.id;}
+    });
+    railLinks.forEach(function(a){
+      var on=a.getAttribute('href')==='/# '+''+cur || a.getAttribute('href')==='#'+cur || a.getAttribute('href')==='/'+'#'+cur;
+      if(on){a.classList.add('active');a.setAttribute('aria-current','true');}
+      else{a.classList.remove('active');a.removeAttribute('aria-current');}
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+
+  if(toTop){
+    toTop.addEventListener('click',function(){
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebSite",
+  "name":"jifangge 云搜",
+  "description":"把公开分享链接整理成可筛选的云盘索引，支持频道、后缀与时间三种筛选维度。",
+  "inLanguage":"zh-CN"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"云盘分享链接失效了还能找回吗","acceptedAnswer":{"@type":"Answer","text":"不能。索引只保存标题与元字段，不保存文件本体。失效链接会进入复核队列，24 小时内决定移出或恢复。"}},
+    {"@type":"Question","name":"ext: 后缀过滤支持哪些文件类型","acceptedAnswer":{"@type":"Answer","text":"支持 pdf、ppt、pptx、doc、docx、xls、xlsx、epub、svg、zip、mp3、mp4 共 12 种，其他后缀会被当作普通关键词处理。"}},
+    {"@type":"Question","name":"site: 限定的是分享页域名还是索引来源","acceptedAnswer":{"@type":"Answer","text":"限定索引中记录的来源站点标识，不解析分享页跳转后的最终域名。同一文件在多个站点被索引时会显示为多条独立条目。"}},
+    {"@type":"Question","name":"为什么同一关键词在不同频道返回数量差很多","acceptedAnswer":{"@type":"Answer","text":"频道收录受来源页公开度影响。高校公开课讲义频道来源集中、更新稳定，单周新增约 46 条；摄影原片频道依赖个人分享，单周新增常在 5 条以下。"}},
+    {"@type":"Question","name":"条目标注的授权信息可以直接商用吗","acceptedAnswer":{"@type":"Answer","text":"不能仅凭标注判断。授权字段记录分享页上写明的许可，但分享者是否有权再许可仍需回到原始出处核实。"}},
+    {"@type":"Question","name":"搜索没有结果时该怎么调整","acceptedAnswer":{"@type":"Answer","text":"先去掉 site: 与时间限定，只留关键词；再把长关键词拆成两个短词分别查。仍为空时检查是否用了已合并的旧频道名。"}},
+    {"@type":"Question","name":"标记失效需要满足什么条件","acceptedAnswer":{"@type":"Answer","text":"同一链接被 3 个不同来源标记后进入复核队列，单次标记立即显示但不改变索引状态，复核在 24 小时内完成。"}}
+  ]
+}
+</script>
+</body>
+  </html>
