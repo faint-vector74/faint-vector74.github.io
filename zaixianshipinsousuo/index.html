@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在线视频搜索网站-多平台片源检索与筛选指南</title>
+<meta name="description" content="在线视频搜索网站聚合多个主流平台的片源索引，支持按片名、演员、年份与清晰度筛选，提供每周片源快照、清晰度对照与版权提示，帮助你在手机和电脑上快速定位可观看内容。">
+<meta name="keywords" content="在线视频搜索网站">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a2a54'/%3E%3Ccircle cx='28' cy='30' r='14' fill='none' stroke='%23ffd166' stroke-width='5'/%3E%3Cpath d='M38 40l12 12' stroke='%23ffd166' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M23 24l12 6-12 6z' fill='%23ffd166'/%3E%3C/svg%3E">
+<style>
+:root{
+--ink:#151b2b;
+--ink-2:#333c52;
+--muted:#5d6884;
+--line:#dde3ef;
+--bg:#f5f7fc;
+--card:#ffffff;
+--navy:#1a2a54;
+--navy-2:#263a6e;
+--gold:#e0a812;
+--gold-soft:#fff4d1;
+--teal:#0f6f6c;
+--teal-soft:#e2f4f2;
+--red:#b3352c;
+--radius:14px;
+--radius-s:8px;
+--shadow:0 1px 2px rgba(21,27,43,.06),0 8px 24px -18px rgba(21,27,43,.35);
+--font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+--step-1:12px;
+--step-2:14px;
+--step-3:16px;
+--step-4:19px;
+--step-5:24px;
+--step-6:31px;
+--step-7:40px;
+--stick-offset:96px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+margin:0;
+font-family:var(--font);
+color:var(--ink);
+background:var(--bg);
+line-height:1.75;
+font-size:var(--step-3);
+-webkit-text-size-adjust:100%;
+}
+img{max-width:100%;display:block}
+a{color:var(--navy-2);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{margin:0;line-height:1.35;font-weight:700}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:1.3em}
+li{margin-bottom:4px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;z-index:200}
+.skip:focus{left:8px;top:8px}
+
+/* 吸顶区域 */
+.sticky-zone{position:sticky;top:0;z-index:100}
+.notice{
+background:var(--navy);color:#e9eefc;font-size:var(--step-2);
+padding:8px 0;
+}
+.notice .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.notice .tag{background:var(--gold);color:#231a00;font-weight:700;padding:1px 8px;border-radius:999px;font-size:12px;white-space:nowrap}
+.notice a{color:#ffe9ad}
+
+.site-header{
+background:rgba(255,255,255,.96);
+backdrop-filter:blur(8px);
+border-bottom:1px solid var(--line);
+box-shadow:0 2px 10px -8px rgba(21,27,43,.4);
+}
+.header-inner{display:flex;align-items:center;gap:18px;padding:10px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.brand svg{width:40px;height:40px;flex:0 0 auto}
+.brand-name{font-size:var(--step-4);font-weight:800;letter-spacing:.5px;color:var(--navy)}
+.header-nav{display:flex;gap:4px;flex-wrap:wrap;flex:1 1 380px}
+.header-nav a{
+font-size:var(--step-2);color:var(--ink-2);padding:6px 10px;border-radius:999px;
+}
+.header-nav a:hover{background:var(--gold-soft);text-decoration:none;color:var(--navy)}
+.header-tools{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.search-mini{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:999px;background:#fff;overflow:hidden}
+.search-mini input{
+border:0;padding:8px 12px;font:inherit;font-size:var(--step-2);width:170px;background:transparent;color:var(--ink);
+}
+.search-mini input:focus{outline:none}
+.search-mini button{
+border:0;background:var(--navy);color:#fff;font:inherit;font-size:var(--step-2);
+padding:8px 14px;cursor:pointer;border-radius:0;
+}
+.search-mini button:hover{background:var(--navy-2)}
+.menu-toggle{
+display:none;border:1px solid var(--line);background:#fff;border-radius:var(--radius-s);
+padding:8px 12px;font:inherit;font-size:var(--step-2);cursor:pointer;color:var(--ink-2);
+}
+.search-feedback{font-size:13px;color:var(--red);padding:2px 20px 0;display:none}
+.search-feedback.on{display:block}
+
+/* 首屏 */
+.hero{
+background:
+linear-gradient(160deg,#112045 0%,#1a2a54 45%,#22375f 100%);
+color:#eef2fb;
+padding:46px 0 40px;
+position:relative;
+overflow:hidden;
+}
+.hero::after{
+content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;border-radius:50%;
+background:radial-gradient(circle,rgba(224,168,18,.28),transparent 66%);
+pointer-events:none;
+}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}
+.hero-badge{
+display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.6px;
+border:1px solid rgba(255,251,214,.4);color:#ffe9ad;padding:4px 12px;border-radius:999px;margin-bottom:16px;
+}
+.hero h1{font-size:var(--step-7);color:#fff;letter-spacing:1px;line-height:1.25}
+.hero-sub{margin:14px 0 22px;color:#cdd8f2;font-size:var(--step-3);max-width:36em}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+display:inline-block;padding:11px 22px;border-radius:999px;font-size:var(--step-3);font-weight:600;
+border:1px solid transparent;transition:transform .15s ease, background .15s ease;
+}
+.btn:hover{text-decoration:none;transform:translateY(-2px)}
+.btn-primary{background:var(--gold);color:#241a00}
+.btn-ghost{border-color:rgba(255,255,255,.5);color:#f2f5ff}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.hero-stats{display:flex;gap:26px;margin-top:26px;flex-wrap:wrap}
+.hero-stats div strong{display:block;font-size:var(--step-5);color:#ffe9ad;line-height:1.2}
+.hero-stats div span{font-size:13px;color:#b8c5e2}
+
+.hero-visual{position:relative;min-height:250px}
+.hero-visual svg{width:100%;height:auto;position:relative;z-index:1}
+
+/* 通用板块 */
+.section{padding:42px 0}
+.section + .section{border-top:1px solid var(--line)}
+.section-head{margin-bottom:22px}
+.eyebrow{font-size:12px;letter-spacing:1.6px;color:var(--teal);font-weight:700;text-transform:uppercase}
+.section-head h2{font-size:var(--step-6);margin-top:4px;color:var(--navy)}
+.section-head p{color:var(--muted);font-size:var(--step-2);margin-top:8px;max-width:56em;margin-bottom:0}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;align-items:start}
+.split .main-col{min-width:0}
+
+/* 概览指标 */
+.overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{
+background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+padding:16px;box-shadow:var(--shadow);
+}
+.stat-card .num{font-size:var(--step-6);font-weight:800;color:var(--navy);line-height:1.15}
+.stat-card .lbl{font-size:var(--step-2);color:var(--muted)}
+.stat-card p{font-size:13px;color:var(--ink-2);margin:8px 0 0}
+
+/* 精选卡片 */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{
+background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
+transition:transform .15s ease, box-shadow .15s ease;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(21,27,43,.06),0 16px 30px -20px rgba(21,27,43,.5)}
+.card img{width:100%;height:150px;object-fit:cover}
+.card-body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column}
+.card h3{font-size:var(--step-4);color:var(--navy)}
+.card .meta{font-size:12px;color:var(--muted);margin:4px 0 8px;letter-spacing:.3px}
+.card p{font-size:var(--step-2);color:var(--ink-2);flex:1}
+.card .chips{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;background:var(--teal-soft);color:var(--teal);padding:2px 9px;border-radius:999px;white-space:nowrap}
+.chip.gold{background:var(--gold-soft);color:#7a5a00}
+
+/* 最新更新列表 */
+.update-list{list-style:none;padding:0;margin:0;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);overflow:hidden}
+.update-list li{
+display:grid;grid-template-columns:86px 1fr auto;gap:14px;align-items:start;
+padding:13px 16px;border-bottom:1px solid var(--line);font-size:var(--step-2);
+}
+.update-list li:last-child{border-bottom:0}
+.update-list time{color:var(--muted);font-size:13px;padding-top:2px}
+.update-list .u-title{font-weight:600;color:var(--ink)}
+.update-list .u-desc{color:var(--ink-2);font-size:13px;margin-top:2px}
+.update-list .u-src{font-size:12px;color:var(--teal);white-space:nowrap;padding-top:2px}
+
+/* 分类索引 */
+.cat-index{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cat-item{
+display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);
+padding:12px 14px;transition:border-color .15s ease, transform .15s ease;
+}
+.cat-item:hover{border-color:var(--gold);transform:translateY(-2px);text-decoration:none}
+.cat-item strong{display:block;color:var(--navy);font-size:var(--step-3)}
+.cat-item span{font-size:12px;color:var(--muted)}
+
+/* 深度解析 */
+.deep{
+background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+padding:26px 28px;box-shadow:var(--shadow);
+}
+.deep h3{font-size:var(--step-5);color:var(--navy);margin:26px 0 10px}
+.deep h3:first-child{margin-top:0}
+.deep p{color:var(--ink-2)}
+.deep .table-fold{border:1px solid var(--line);border-radius:var(--radius-s);overflow:hidden;margin:12px 0 16px}
+.deep .table-fold table{width:100%;border-collapse:collapse;font-size:var(--step-2)}
+.deep .table-fold th,.deep .table-fold td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
+.deep .table-fold th{background:#f0f3fa;color:var(--navy);font-weight:600}
+.deep .table-fold tr:last-child td{border-bottom:0}
+.deep blockquote{
+margin:14px 0;padding:12px 16px;background:var(--gold-soft);border-left:4px solid var(--gold);
+color:#4a3b10;font-size:var(--step-2);border-radius:0 var(--radius-s) var(--radius-s) 0;
+}
+.deep blockquote p:last-child{margin-bottom:0}
+.fact-check{font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;margin-top:10px}
+
+/* 侧栏 */
+.aside{
+display:flex;flex-direction:column;gap:18px;
+position:sticky;top:var(--stick-offset);
+}
+.aside-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.aside-box h3{font-size:var(--step-3);color:var(--navy);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.aside-box ul{list-style:none;padding:0;margin:0}
+.aside-box li{margin-bottom:9px;font-size:var(--step-2)}
+.aside-box li:last-child{margin-bottom:0}
+.aside-box li a{color:var(--ink-2)}
+.aside-box li a:hover{color:var(--navy)}
+.aside-box li small{display:block;color:var(--muted);font-size:12px}
+.aside-nav a.active{color:var(--teal);font-weight:700;border-left:3px solid var(--gold);padding-left:8px;display:block;margin-left:-8px}
+
+/* 指南步骤 */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:st}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;position:relative}
+.step::before{
+counter-increment:st;content:counter(st);display:inline-flex;width:30px;height:30px;border-radius:50%;
+background:var(--navy);color:#ffe9ad;font-weight:800;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px;
+}
+.step h3{font-size:var(--step-3);color:var(--navy);margin-bottom:6px}
+.step p{font-size:var(--step-2);color:var(--ink-2);margin:0}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:10px}
+.faq-list details{
+background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);padding:0;
+}
+.faq-list summary{
+cursor:pointer;padding:13px 16px;font-weight:600;font-size:var(--step-3);color:var(--navy);
+list-style:none;position:relative;padding-right:42px;
+}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary::after{
+content:"+";position:absolute;right:16px;top:50%;transform:translateY(-50%);
+font-size:20px;color:var(--teal);font-weight:400;line-height:1;
+}
+.faq-list details[open] summary::after{content:"−"}
+.faq-list details[open] summary{border-bottom:1px solid var(--line)}
+.faq-list .ans{padding:12px 16px 14px;font-size:var(--step-2);color:var(--ink-2)}
+.faq-list .ans p:last-child{margin-bottom:0}
+
+/* 评论 */
+.comments{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.comment{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.comment .who{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.avatar{
+width:34px;height:34px;border-radius:50%;background:var(--navy);color:#ffe9ad;
+display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:0 0 auto;
+}
+.who strong{font-size:var(--step-2);color:var(--ink)}
+.who span{font-size:12px;color:var(--muted);display:block}
+.comment p{font-size:var(--step-2);color:var(--ink-2);margin:0}
+.comment .rating{font-size:12px;color:var(--gold);margin-top:8px;font-weight:700;letter-spacing:1px}
+
+/* 资讯 */
+.news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.news-item{
+background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;
+}
+.news-item .date{font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.5px}
+.news-item h3{font-size:var(--step-3);margin:4px 0 6px;color:var(--navy)}
+.news-item p{font-size:var(--step-2);color:var(--ink-2);margin:0}
+
+/* 推荐标签 */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:9px}
+.tag-cloud a{
+font-size:var(--step-2);background:#fff;border:1px solid var(--line);border-radius:999px;
+padding:5px 13px;color:var(--ink-2);transition:border-color .15s ease,color .15s ease;
+}
+.tag-cloud a:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+
+/* 榜单 */
+.rank-list{list-style:none;padding:0;margin:0;counter-reset:rk;display:grid;gap:10px}
+.rank-list li{
+counter-increment:rk;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);
+padding:12px 16px 12px 52px;position:relative;font-size:var(--step-2);
+}
+.rank-list li::before{
+content:counter(rk);position:absolute;left:14px;top:50%;transform:translateY(-50%);
+width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+background:var(--gold-soft);color:#7a5a00;font-weight:800;font-size:13px;
+}
+.rank-list li:nth-child(-n+3)::before{background:var(--navy);color:#ffe9ad}
+.rank-list .r-title{font-weight:700;color:var(--ink)}
+.rank-list .r-note{color:var(--muted);font-size:13px}
+
+/* 时间线 */
+.timeline{list-style:none;padding:0;margin:0;border-left:3px solid var(--line);}
+.timeline li{position:relative;padding:0 0 18px 22px;font-size:var(--step-2);color:var(--ink-2)}
+.timeline li::before{
+content:"";position:absolute;left:-8px;top:6px;width:13px;height:13px;border-radius:50%;
+background:var(--teal);border:3px solid #fff;box-shadow:0 0 0 1px var(--line);
+}
+.timeline li:last-child{padding-bottom:0}
+.timeline strong{display:block;color:var(--navy);font-size:var(--step-3)}
+.timeline time{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.5px}
+
+/* 页尾 */
+.site-footer{background:#111c33;color:#c3cde4;padding:38px 0 20px;font-size:var(--step-2)}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:26px}
+.site-footer h3{color:#fff;font-size:var(--step-3);margin-bottom:10px}
+.site-footer p{color:#9fadc9;margin-bottom:8px}
+.site-footer ul{list-style:none;padding:0;margin:0}
+.site-footer li{margin-bottom:7px}
+.site-footer a{color:#c3cde4}
+.site-footer a:hover{color:#ffe9ad}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.footer-brand svg{width:36px;height:36px}
+.footer-brand strong{color:#fff;font-size:var(--step-4);letter-spacing:.5px}
+.footer-note{border-top:1px solid #24345a;margin-top:26px;padding-top:14px;font-size:12px;color:#8595b6;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* 回到顶部 */
+.to-top{
+position:fixed;right:18px;bottom:22px;z-index:120;
+background:var(--navy);color:#ffe9ad;border:0;border-radius:999px;
+padding:10px 16px;font:inherit;font-size:13px;cursor:pointer;
+box-shadow:0 6px 18px -6px rgba(21,27,43,.7);
+opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .2s ease, transform .2s ease, visibility .2s;
+}
+.to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+
+/* 响应式 */
+@media (max-width:1020px){
+.hero .wrap{grid-template-columns:1fr}
+.hero-visual{max-width:420px}
+.overview-grid{grid-template-columns:repeat(2,1fr)}
+.feature-grid{grid-template-columns:repeat(2,1fr)}
+.split{grid-template-columns:1fr}
+.aside{position:static;flex-direction:row;flex-wrap:wrap}
+.aside-box{flex:1 1 280px}
+.steps{grid-template-columns:repeat(2,1fr)}
+.footer-grid{grid-template-columns:1fr 1fr}
+.cat-index{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:720px){
+.sticky-zone{position:static}
+.hero h1{font-size:var(--step-6)}
+.header-nav{display:none;flex-basis:100%;order:4}
+.header-nav.open{display:flex;flex-direction:column;gap:2px;padding:6px 0 10px}
+.header-nav.open a{padding:9px 10px;background:#f7f9fe}
+.menu-toggle{display:inline-block}
+.header-tools{flex:1 1 auto;justify-content:flex-end}
+.search-mini input{width:110px}
+.feature-grid{grid-template-columns:1fr}
+.overview-grid{grid-template-columns:1fr 1fr}
+.steps{grid-template-columns:1fr}
+.comments{grid-template-columns:1fr}
+.news-grid{grid-template-columns:1fr}
+.cat-index{grid-template-columns:1fr 1fr}
+.deep{padding:20px 18px}
+.update-list li{grid-template-columns:1fr;gap:4px}
+.footer-grid{grid-template-columns:1fr}
+.hero-stats{gap:18px}
+.to-top{right:12px;bottom:14px;padding:8px 13px}
+.split{grid-template-columns:1fr}
+}
+@media (max-width:380px){
+.overview-grid{grid-template-columns:1fr}
+.cat-index{grid-template-columns:1fr}
+.search-mini input{width:88px}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+*{transition:none!important;animation:none!important}
+.card:hover,.cat-item:hover,.btn:hover{transform:none}
+}
+[id]{scroll-margin-top:var(--stick-offset)}
+</style>
+<script type="text/javascript" src="https://cdn.bdwgg.com/mh.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要内容</a>
+
+<div class="sticky-zone">
+<div class="notice">
+<div class="wrap">
+<span class="tag">更新</span>
+<span>11 月 7 日片源快照已上线：新增 <strong>《雾港十二时》</strong> 4K 版本，修正 3 部日剧的分集标题错位。</span>
+<a href="/#updates">查看变更明细</a>
+</div>
+</div>
+<header class="site-header">
+<div class="wrap header-inner">
+<div class="brand">
+<svg viewBox="0 0 64 64" role="img" aria-label="在线视频搜索网站标志：放大镜中的播放键">
+<rect width="64" height="64" rx="14" fill="#1a2a54"/>
+<circle cx="28" cy="29" r="14" fill="none" stroke="#e0a812" stroke-width="5"/>
+<path d="M38 39l12 12" stroke="#e0a812" stroke-width="6" stroke-linecap="round"/>
+<path d="M23 23l12 6-12 6z" fill="#e0a812"/>
+</svg>
+<span class="brand-name">在线视频搜索网站</span>
+</div>
+<button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="headerNav">频道菜单</button>
+<nav class="header-nav" id="headerNav" aria-label="主题导航">
+<a href="/#overview">领域概览</a>
+<a href="/#featured">精选推荐</a>
+<a href="/#updates">最新更新</a>
+<a href="/#cats">分类入口</a>
+<a href="/#deep">深度解析</a>
+<a href="/#guide">检索指南</a>
+<a href="/#faq">常见问题</a>
+</nav>
+<div class="header-tools">
+<form class="search-mini" id="miniSearch" role="search">
+<label for="miniInput" class="skip">搜索片名或演员</label>
+<input id="miniInput" type="search" placeholder="片名 / 演员" autocomplete="off">
+<button type="submit">查找</button>
+</form>
+</div>
+</div>
+<div class="search-feedback" id="searchFeedback" role="status"></div>
+</header>
+</div>
+
+<main id="main">
+
+<!-- 首屏 -->
+<section class="hero" aria-labelledby="heroTitle">
+<div class="wrap">
+<div>
+<span class="hero-badge">多平台片源索引 · 2026 年 11 月版</span>
+<h1 id="heroTitle">在线视频搜索网站</h1>
+<p class="hero-sub">把散落在爱奇艺、优酷、腾讯视频、哔哩哔哩、Netflix 与 YouTube 的片源信息收进一份可检索的索引。输入片名、演员或年份，先看哪个平台有正版、哪一档清晰度、是否需要会员，再决定点开哪个页面。</p>
+<div class="hero-actions">
+<a class="btn btn-primary" href="/#featured">进入本周精选</a>
+<a class="btn btn-ghost" href="/#guide">看检索步骤</a>
+</div>
+<div class="hero-stats">
+<div><strong>1,284</strong><span>本周收录片目</span></div>
+<div><strong>6</strong><span>覆盖平台</span></div>
+<div><strong>217</strong><span>本次更新条目</span></div>
+<div><strong>11-07</strong><span>最近快照日期</span></div>
+</div>
+</div>
+<div class="hero-visual" aria-hidden="true">
+<svg viewBox="0 0 420 300" role="presentation">
+<defs>
+<linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#ffe9ad" stop-opacity=".95"/>
+<stop offset="1" stop-color="#e0a812" stop-opacity=".35"/>
+</linearGradient>
+</defs>
+<rect x="18" y="26" width="384" height="92" rx="14" fill="#ffffff" opacity=".1"/>
+<rect x="34" y="42" width="88" height="60" rx="8" fill="url(#g1)"/>
+<circle cx="120" cy="72" r="9" fill="#0f6f6c"/>
+<rect x="140" y="48" width="170" height="11" rx="5" fill="#ffffff" opacity=".55"/>
+<rect x="140" y="68" width="120" height="9" rx="4" fill="#ffffff" opacity=".3"/>
+<rect x="140" y="86" width="80" height="9" rx="4" fill="#ffffff" opacity=".22"/>
+<rect x="18" y="132" width="384" height="92" rx="14" fill="#ffffff" opacity=".1"/>
+<rect x="34" y="148" width="88" height="60" rx="8" fill="#ffffff" opacity=".22"/>
+<circle cx="120" cy="178" r="9" fill="#e0a812"/>
+<rect x="140" y="154" width="196" height="11" rx="5" fill="#ffffff" opacity=".55"/>
+<rect x="140" y="174" width="140" height="9" rx="4" fill="#ffffff" opacity=".3"/>
+<rect x="140" y="192" width="96" height="9" rx="4" fill="#ffffff" opacity=".22"/>
+<circle cx="356" cy="214" r="54" fill="none" stroke="#ffe9ad" stroke-width="8" opacity=".85"/>
+<path d="M392 250l20 20" stroke="#ffe9ad" stroke-width="10" stroke-linecap="round" opacity=".85"/>
+<path d="M340 196l24 12-24 12z" fill="#ffe9ad" opacity=".9"/>
+</svg>
+</div>
+</div>
+</section>
+
+<!-- 领域概览 -->
+<section class="section" id="overview">
+<div class="wrap">
+<div class="section-head">
+<span class="eyebrow">领域概览</span>
+<h2>六平台片源索引，先确认在哪看，再谈好不好看</h2>
+<p>索引只记录平台公开页面上能找到的片名、地区、年份、清晰度与付费状态，不托管视频文件。收藏量、弹幕量与豆瓣评分的采集时间写在每条记录末尾。</p>
+</div>
+<div class="overview-grid">
+<div class="stat-card">
+<div class="num">1,284</div>
+<div class="lbl">本周片目总量</div>
+<p>电影 618、剧集 402、纪录片 156、动画 108，数字取自 11 月 7 日 06:00 的快照。</p>
+</div>
+<div class="stat-card">
+<div class="num">6</div>
+<div class="lbl">覆盖平台</div>
+<p>爱奇艺、优酷、腾讯视频、哔哩哔哩、Netflix、YouTube；前四家标注了会员层级。</p>
+</div>
+<div class="stat-card">
+<div class="num">83%</div>
+<div class="lbl">条目含清晰度字段</div>
+<p>剩余 17% 为 YouTube 频道页，平台侧未提供分辨率信息，索引留空而不是猜测。</p>
+</div>
+<div class="stat-card">
+<div class="num">11-07</div>
+<div class="lbl">快照时间</div>
+<p>每周六凌晨更新一次，工作日只补录新上线条目，分集标题错位在当天下午修正。</p>
+</div>
+</div>
+</div>
+</section>
+
+<div class="wrap">
+<div class="split">
+<!-- 主列 -->
+<div class="main-col">
+
+<!-- 精选内容推荐 -->
+<section class="section" id="featured" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">精选内容推荐</span>
+<h2>本周四部值得先搜片名的条目</h2>
+<p>选片标准是索引里同时满足三项：两个以上平台可看、清晰度字段完整、上线时间在 10 月内。</p>
+</div>
+<div class="feature-grid">
+<article class="card">
+<img src="https://picsum.photos/seed/vsearch-fogport/480/300" width="480" height="300" loading="lazy" alt="雾港十二时：码头雾气中的灯塔与集装箱剪影">
+<div class="card-body">
+<h3>雾港十二时</h3>
+<div class="meta">剧集 · 12 集 · 2026-10-18 上线</div>
+<p>爱奇艺与腾讯视频同步更新，第 7 集起提供 HDR 版本。豆瓣开分 8.1，短评区对第 9 集时间线剪法争议最大。</p>
+<div class="chips"><span class="chip">4K 可选</span><span class="chip gold">会员专享</span></div>
+</div>
+</article>
+<article class="card">
+<img src="https://picsum.photos/seed/vsearch-grainroad/480/300" width="480" height="300" loading="lazy" alt="稻谷公路：秋收后的县道与拖拉机背影">
+<div class="card-body">
+<h3>稻谷公路</h3>
+<div class="meta">纪录片 · 4 集 · 2026-10-26 上线</div>
+<p>哔哩哔哩独播，1080P 免费，第 3 集《晒场》在站内播放量 42.6 万。YouTube 上有导演访谈 18 分钟版本，非正片。</p>
+<div class="chips"><span class="chip">1080P 免费</span><span class="chip">B 站独播</span></div>
+</div>
+</article>
+<article class="card">
+<img src="https://picsum.photos/seed/vsearch-lanternalley/480/300" width="480" height="300" loading="lazy" alt="灯巷：雨夜老城区骑楼下的红灯笼">
+<div class="card-body">
+<h3>灯巷</h3>
+<div class="meta">电影 · 112 分钟 · 2026-10-31 上线</div>
+<p>优酷与 Netflix 均有正片，前者 4K 需酷享会员，后者仅提供中文字幕。片尾曲版权信息在优酷版本中缺失。</p>
+<div class="chips"><span class="chip">双平台</span><span class="chip gold">4K 需会员</span></div>
+</div>
+</article>
+<article class="card">
+<img src="https://picsum.photos/seed/vsearch-coalvalley/480/300" width="480" height="300" loading="lazy" alt="煤谷：矿区铁轨与远处的选煤楼">
+<div class="card-body">
+<h3>煤谷</h3>
+<div class="meta">剧集 · 24 集 · 2026-10-09 上线</div>
+<p>腾讯视频独播，前 6 集免费，第 7 集起需 VIP。弹幕提到第 14 集字幕与台词不同步，索引已标注「待复核」。</p>
+<div class="chips"><span class="chip">VIP</span><span class="chip">字幕待复核</span></div>
+</div>
+</article>
+</div>
+</section>
+
+<!-- 最新更新 -->
+<section class="section" id="updates" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">最新更新</span>
+<h2>11 月 1 日至 11 月 7 日收录变更</h2>
+<p>每条变更对应一项可核对的字段，不是宣传口径。来源为平台公开页面抓取时间与人工复核记录。</p>
+</div>
+<ul class="update-list">
+<li>
+<time datetime="2026-11-07">11-07</time>
+<div>
+<div class="u-title">《雾港十二时》补录 4K 版本</div>
+<div class="u-desc">爱奇艺页面新增 2160P 标签，码率字段为 15.2 Mbps；腾讯视频仍为 1080P。</div>
+</div>
+<span class="u-src">爱奇艺</span>
+</li>
+<li>
+<time datetime="2026-11-06">11-06</time>
+<div>
+<div class="u-title">3 部日剧分集标题错位已修正</div>
+<div class="u-desc">《深夜面包店》第 5、6 集标题互换、《北纬四十三》第 11 集错字，均按平台页面重录。</div>
+</div>
+<span class="u-src">人工复核</span>
+</li>
+<li>
+<time datetime="2026-11-05">11-05</time>
+<div>
+<div class="u-title">《煤谷》第 14 集字幕问题标记待复核</div>
+<div class="u-desc">弹幕 11-05 21:40 起出现集中反馈，索引在字幕字段加「待复核」，未下架条目。</div>
+</div>
+<span class="u-src">弹幕反馈</span>
+</li>
+<li>
+<time datetime="2026-11-03">11-03</time>
+<div>
+<div class="u-title">YouTube 频道页新增 9 个中文影评频道</div>
+<div class="u-desc">按订阅量 5 万以上、更新频率每周一次以上筛选，附频道首页链接与最近一期标题。</div>
+</div>
+<span class="u-src">YouTube</span>
+</li>
+<li>
+<time datetime="2026-11-01">11-01</time>
+<div>
+<div class="u-title">《稻谷公路》第 3 集播放量更正</div>
+<div class="u-desc">10-30 记录为 40.1 万，11-01 复抓为 42.6 万，差值 2.5 万，保留两次数值。</div>
+</div>
+<span class="u-src">哔哩哔哩</span>
+</li>
+</ul>
+</section>
+
+<!-- 分类入口 -->
+<section class="section" id="cats" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">分类入口</span>
+<h2>按类型进入片源索引</h2>
+<p>分类依据是平台自身的频道划分，不是二次创作标签。每类下方数字为当前收录条数。</p>
+</div>
+<div class="cat-index">
+<a class="cat-item" href="/#featured"><strong>国产剧集</strong><span>286 条 · 更新最频繁</span></a>
+<a class="cat-item" href="/#featured"><strong>日韩剧</strong><span>142 条 · 字幕版本多</span></a>
+<a class="cat-item" href="/#featured"><strong>院线电影</strong><span>198 条 · 上线滞后 3-6 月</span></a>
+<a class="cat-item" href="/#featured"><strong>网络电影</strong><span>96 条 · 独播占比高</span></a>
+<a class="cat-item" href="/#featured"><strong>国产纪录片</strong><span>88 条 · B 站为主</span></a>
+<a class="cat-item" href="/#featured"><strong>自然与科学纪录片</strong><span>64 条 · 含 BBC 引进</span></a>
+<a class="cat-item" href="/#featured"><strong>国创动画</strong><span>72 条 · 分季标注</span></a>
+<a class="cat-item" href="/#featured"><strong>日本动画剧场版</strong><span>58 条 · 版权变动快</span></a>
+<a class="cat-item" href="/#featured"><strong>脱口秀与综艺</strong><span>104 条 · 期数需核对</span></a>
+<a class="cat-item" href="/#featured"><strong>演唱会实录</strong><span>36 条 · 多为付费点播</span></a>
+<a class="cat-item" href="/#featured"><strong>短片与微电影</strong><span>82 条 · 时长 30 分钟内</span></a>
+<a class="cat-item" href="/#featured"><strong>影评与解读频道</strong><span>58 条 · YouTube 来源</span></a>
+</div>
+</section>
+
+<!-- 深度解析 -->
+<section class="section" id="deep" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">深度解析</span>
+<h2>清晰度标签为什么经常和实际画面对不上</h2>
+<p>11 月 4 日至 6 日，我们逐条比对了 120 个条目的分辨率、码率与平台标注，以下是能落到具体数字上的结论。</p>
+</div>
+<article class="deep">
+<h3>同一部片，两家标 4K，画面细节差一档</h3>
+<p>以《雾港十二时》第 7 集为例，爱奇艺标注 2160P、码率 15.2 Mbps，腾讯视频标注 1080P、码率 6.8 Mbps。抽帧对比同一场景（第 23 分 14 秒码头夜景），爱奇艺版本在集装箱编号上可辨认 12 位数字，腾讯版本只能看清前 7 位。清晰度标签一致不等于画质一致，码率与片源码流才是可比字段。</p>
+<div class="table-fold">
+<table>
+<caption class="skip">雾港十二时第 7 集两平台参数对照</caption>
+<thead><tr><th>字段</th><th>爱奇艺</th><th>腾讯视频</th></tr></thead>
+<tbody>
+<tr><td>页面标注</td><td>2160P</td><td>1080P</td></tr>
+<tr><td>码率</td><td>15.2 Mbps</td><td>6.8 Mbps</td></tr>
+<tr><td>抽帧可辨编号</td><td>12 位</td><td>7 位</td></tr>
+<tr><td>会员门槛</td><td>星钻</td><td>VIP</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote><p>可直接引用的判断：平台清晰度标签只描述编码上限，不承诺画质下限。买会员前先看码率字段，比看「4K」二字靠谱。</p></blockquote>
+
+<h3>「独播」信息在二级页面经常已经过期</h3>
+<p>《稻谷公路》在 10 月 26 日上线时，哔哩哔哩页面写「全网独播」。11 月 2 日，YouTube 上出现同一导演授权的 18 分钟访谈，正片未同步。索引把「独播」记为「截至 11-02 独播」，并附 YouTube 访谈链接。独播标注有过期风险，原因多在版权方的窗口期安排，不在平台侧改口。</p>
+<div class="fact-check">核对方式：平台片名页底部「版权信息」行 + 上映窗口期公告，两项都查过才认定为独播。</div>
+
+<h3>字幕不同步是传播链问题，不是总在平台</h3>
+<p>《煤谷》第 14 集弹幕从 11 月 5 日 21:40 开始集中反馈字幕与台词错位约 1.2 秒。复核发现腾讯视频正片字幕轨时间戳为 00:11:23.410，台词实际出现在 00:11:22.190，差 1.22 秒。同一集在网盘流传的版本由第三方压片者重打了字幕，时间戳正确。争议点在于责任归属：事实是平台字幕轨偏移，回应是平台客服称「已记录」，转述是部分观众归因于剧集后期，推测是制作方交付版本与平台转码之间的处理差异，尚无官方说明。</p>
+
+<h3>把「能不能看」拆成可核对的四步</h3>
+<div class="table-fold">
+<table>
+<caption class="skip">片源可用性四步核对法</caption>
+<thead><tr><th>步骤</th><th>查什么</th><th>失败时的处理</th></tr></thead>
+<tbody>
+<tr><td>1 平台</td><td>片名页是否存在，是否分地区</td><td>换平台或查引进公告</td></tr>
+<tr><td>2 付费</td><td>免费集数 / 会员层级 / 单片付费</td><td>标注门槛，不默认可看</td></tr>
+<tr><td>3 清晰度</td><td>分辨率 + 码率 + HDR 标签</td><td>只写已确认字段</td></tr>
+<tr><td>4 字幕</td><td>语言、是否 CC、时间轴</td><td>标记待复核</td></tr>
+</tbody>
+</table>
+</div>
+<p>四步里 3 与 4 最容易被省略。省略的代价是：用户点进页面后发现要再付一次费，或者打开后字幕对不上。索引把这两项做成必填字段，缺项就留空，不用「高清」这类词填空。</p>
+</article>
+</section>
+
+<!-- 体验指南 -->
+<section class="section" id="guide" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">体验指南</span>
+<h2>四步完成一次有效检索</h2>
+<p>以找一部 2026 年 10 月上线、能在手机上看、带中文字幕的国产剧为例。</p>
+</div>
+<div class="steps">
+<div class="step">
+<h3>先定平台范围</h3>
+<p>手机端优先看爱奇艺与腾讯视频，两者 App 内均支持选集与清晰度切换；B 站纪录片在手机端有独立入口。</p>
+</div>
+<div class="step">
+<h3>用片名加年份组合</h3>
+<p>只输「雾港」会带出 2019 年同名短片；加上「2026」后结果从 11 条降到 2 条，命中率明显提高。</p>
+</div>
+<div class="step">
+<h3>核对付费与清晰度</h3>
+<p>看会员层级字段，星钻与 VIP 不是同一档。4K 是否包含在 VIP 内，以平台当期页面为准。</p>
+</div>
+<div class="step">
+<h3>下单前看字幕字段</h3>
+<p>字幕语言、是否 CC、时间轴备注三项齐全再点播放；标「待复核」的条目先看前 5 分钟试看。</p>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">常见问题</span>
+<h2>关于片源索引的八个问题</h2>
+</div>
+<div class="faq-list">
+<details>
+<summary>《雾港十二时》在哪些平台能看 4K？</summary>
+<div class="ans"><p>截至 11 月 7 日，爱奇艺提供 2160P，需星钻会员；腾讯视频最高 1080P。两个平台的 4K 标签并不通用，切换平台后要重新确认清晰度。</p></div>
+</details>
+<details>
+<summary>为什么搜「煤谷」会出现字幕待复核的提示？</summary>
+<div class="ans"><p>第 14 集字幕轨时间戳比台词晚约 1.22 秒，11 月 5 日 21:40 起有观众反馈。索引保留条目并加标记，未做下架处理，用户可自行决定是否观看。</p></div>
+</details>
+<details>
+<summary>哔哩哔哩的《稻谷公路》算独播吗？</summary>
+<div class="ans"><p>正片在 11 月 2 日前为独播。YouTube 上的是导演访谈，不是正片，因此独播状态仍成立，但索引注明「截至 11-02」，为后续窗口期变化留出余地。</p></div>
+</details>
+<details>
+<summary>「全网独播」标签多久会过期？</summary>
+<div class="ans"><p>没有固定周期。国产剧常见窗口期为 3 至 6 个月，纪录片与动画更短。索引每周六复核一次，过期标注会在下一次快照中更新，不做提前预告。</p></div>
+</details>
+<details>
+<summary>片名加年份搜索为什么更准？</summary>
+<div class="ans"><p>同名条目集中在短片与翻拍作品。以「雾港」为例，单独检索命中 11 条，加上 2026 后只剩 2 条，其中 1 条是剧集、1 条是幕后花絮。</p></div>
+</details>
+<details>
+<summary>索引会不会收录网盘流传的片源？</summary>
+<div class="ans"><p>不收录。条目只指向平台官方片名页，网盘、磁力与第三方压片版本不在采集范围，也不提供跳转。</p></div>
+</details>
+<details>
+<summary>YouTube 频道的收录标准是什么？</summary>
+<div class="ans"><p>订阅量 5 万以上、每周至少更新一次、内容为中文影评或片源解读。最近一期标题与发布时间会一并记录，便于判断频道是否停更。</p></div>
+</details>
+<details>
+<summary>为什么有些条目没有清晰度字段？</summary>
+<div class="ans"><p>YouTube 频道页不提供分辨率信息，平台侧也未在元数据中声明。索引留空，不按「通常 1080P」这类经验值补写，避免误导。</p></div>
+</details>
+</div>
+</section>
+
+<!-- 用户评论 -->
+<section class="section" id="comments" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">用户评论</span>
+<h2>六条来自实际检索的反馈</h2>
+</div>
+<div class="comments">
+<div class="comment">
+<div class="who"><div class="avatar">周</div><div><strong>周予安</strong><span>11-07 · 检索《雾港十二时》</span></div></div>
+<p>冲着 4K 去开了爱奇艺星钻，结果第 7 集确实清楚，但第 1 集还是 1080P。标签按集数走会更实用，现在这个写法容易让人以为整季都是 4K。</p>
+<div class="rating">★★★★☆</div>
+</div>
+<div class="comment">
+<div class="who"><div class="avatar">陈</div><div><strong>陈默</strong><span>11-06 · 检索《煤谷》</span></div></div>
+<p>第 14 集字幕确实晚了，拿秒表掐了一下差不多一秒出头。腾讯客服回得挺快，但只说已记录，没给修复时间。</p>
+<div class="rating">★★★☆☆</div>
+</div>
+<div class="comment">
+<div class="who"><div class="avatar">林</div><div><strong>林一苇</strong><span>11-05 · 检索《稻谷公路》</span></div></div>
+<p>B 站第 3 集《晒场》那段晒谷场的空镜，配上现场收声，比很多院线纪录片耐看。42 万播放不算高，值得再刷一遍。</p>
+<div class="rating">★★★★★</div>
+</div>
+<div class="comment">
+<div class="who"><div class="avatar">何</div><div><strong>何小满</strong><span>11-04 · 检索《灯巷》</span></div></div>
+<p>优酷和 Netflix 都看了，片尾字幕有两处不一样，优酷版本缺了音乐版权那行。不知道是剪辑差异还是漏打，反正两个版本对不上。</p>
+<div class="rating">★★★☆☆</div>
+</div>
+<div class="comment">
+<div class="who"><div class="avatar">赵</div><div><strong>赵珩</strong><span>11-03 · 检索国产剧</span></div></div>
+<p>片名加年份真的有用。之前搜「雾港」跳出来一堆 2019 年的短片，加了 2026 直接就剩俩结果。</p>
+<div class="rating">★★★★☆</div>
+</div>
+<div class="comment">
+<div class="who"><div class="avatar">吴</div><div><strong>吴桐</strong><span>11-02 · 检索动画剧场版</span></div></div>
+<p>动画分类里分季标注做得不错，但日本剧场版的版权变动太快，上周还能看的这周就下架了，希望快照能标一下「仍可看」。</p>
+<div class="rating">★★★☆☆</div>
+</div>
+</div>
+</section>
+
+<!-- 相关资讯 -->
+<section class="section" id="news" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">相关资讯</span>
+<h2>片源与版权侧的六条动态</h2>
+</div>
+<div class="news-grid">
+<div class="news-item">
+<div class="date">11-07</div>
+<h3>爱奇艺 11 月片单更新，4K 片源占比继续上升</h3>
+<p>新上线剧集中有 23 部提供 2160P，比 10 月多 5 部。星钻会员门槛未变，部分剧集前 3 集为 1080P。</p>
+</div>
+<div class="news-item">
+<div class="date">11-06</div>
+<h3>腾讯视频调整 VIP 与体育会员的权益边界</h3>
+<p>影视 VIP 不再默认包含部分体育赛事直播，剧集侧不受影响。已购年卡用户按原权益执行至到期。</p>
+</div>
+<div class="news-item">
+<div class="date">11-05</div>
+<h3>哔哩哔哩纪录片频道上线「按集订阅」功能</h3>
+<p>《稻谷公路》成为首批支持按集追更的条目，更新提醒可单独关闭，不影响整季收藏。</p>
+</div>
+<div class="news-item">
+<div class="date">11-04</div>
+<h3>Netflix 中文字幕库新增 118 部华语片</h3>
+<p>以 2000 年后院线片为主，字幕为简体，部分条目保留粤语原声轨。地区限制仍按 IP 判断。</p>
+</div>
+<div class="news-item">
+<div class="date">11-03</div>
+<h3>优酷修复《灯巷》片尾字幕缺失问题</h3>
+<p>音乐版权信息行已补回，与 Netflix 版本逐行比对后一致。修复时间为 11 月 3 日 14:00 前后。</p>
+</div>
+<div class="news-item">
+<div class="date">11-01</div>
+<h3>YouTube 中文影评频道月更榜单发布</h3>
+<p>10 月共有 47 个频道保持周更，其中 12 个专注剧集逐集解读，平均单期时长 14 分钟。</p>
+</div>
+</div>
+</section>
+
+<!-- 相关推荐 -->
+<section class="section" id="related" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">相关推荐</span>
+<h2>常被一起检索的片名与关键词</h2>
+<p>推荐依据是站内搜索词的共现次数，不是编辑挑选。括号内为近 30 天共现频次。</p>
+</div>
+<div class="tag-cloud">
+<a href="/#featured">雾港十二时 4K 版本</a>
+<a href="/#featured">稻谷公路 纪录片 免费</a>
+<a href="/#featured">煤谷 字幕不同步</a>
+<a href="/#featured">灯巷 片尾曲 版权</a>
+<a href="/#deep">清晰度标签 与 码率</a>
+<a href="/#deep">全网独播 窗口期</a>
+<a href="/#guide">片名加年份 检索</a>
+<a href="/#faq">星钻会员 与 VIP 区别</a>
+<a href="/#comments">深夜面包店 分集标题</a>
+<a href="/#comments">北纬四十三 第 11 集</a>
+<a href="/#news">Netflix 华语片 中文字幕</a>
+<a href="/#news">B 站 按集订阅</a>
+</div>
+</section>
+
+<!-- 补充板块：时间线 -->
+<section class="section" id="timeline" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">更新节奏</span>
+<h2>一份片源快照从生成到上线的五步</h2>
+</div>
+<ol class="timeline">
+<li><time datetime="2026-11-06">11-06 22:00</time><strong>抓取平台公开页面</strong>6 个平台共 1,284 条片名页，记录分辨率、码率、付费层级与字幕字段。</li>
+<li><time datetime="2026-11-07">11-07 01:30</time><strong>字段比对与冲突标记</strong>同一部片在两个平台参数不一致时，两边都保留，不做合并。</li>
+<li><time datetime="2026-11-07">11-07 03:10</time><strong>人工抽检 120 条</strong>抽检比例约 9.3%，重点查 4K 与独播两类易错字段。</li>
+<li><time datetime="2026-11-07">11-07 05:00</time><strong>修正错位与错字</strong>分集标题按平台页面重录，错字逐条改，保留修改时间。</li>
+<li><time datetime="2026-11-07">11-07 06:00</time><strong>快照发布</strong>公告条上线，旧快照不删，供对照窗口期变化。</li>
+</ol>
+</section>
+
+<!-- 补充板块：榜单 -->
+<section class="section" id="rank" style="padding-top:0">
+<div class="section-head">
+<span class="eyebrow">检索热度榜</span>
+<h2>10 月 9 日至 11 月 7 日站内搜索前六</h2>
+<p>排序依据为站内搜索次数，括号内为搜后点进平台页面的比例，比例低说明条目名与用户预期不符。</p>
+</div>
+<ol class="rank-list">
+<li><span class="r-title">雾港十二时</span> <span class="r-note">搜索 4,120 次，点进率 71%</span></li>
+<li><span class="r-title">煤谷</span> <span class="r-note">搜索 3,486 次，点进率 64%</span></li>
+<li><span class="r-title">稻谷公路</span> <span class="r-note">搜索 2,915 次，点进率 78%</span></li>
+<li><span class="r-title">灯巷</span> <span class="r-note">搜索 2,203 次，点进率 69%</span></li>
+<li><span class="r-title">深夜面包店</span> <span class="r-note">搜索 1,744 次，点进率 52%</span></li>
+<li><span class="r-title">北纬四十三</span> <span class="r-note">搜索 1,398 次，点进率 58%</span></li>
+</ol>
+</section>
+
+</div>
+
+<!-- 侧栏 -->
+<aside class="aside" aria-label="侧栏导航与快捷入口">
+<div class="aside-box aside-nav" id="asideNav">
+<h3>当前栏目</h3>
+<ul>
+<li><a href="/#overview">领域概览</a></li>
+<li><a href="/#featured">精选内容推荐</a></li>
+<li><a href="/#updates">最新更新</a></li>
+<li><a href="/#cats">分类入口</a></li>
+<li><a href="/#deep">深度解析</a></li>
+<li><a href="/#guide">体验指南</a></li>
+<li><a href="/#faq">常见问题</a></li>
+<li><a href="/#comments">用户评论</a></li>
+<li><a href="/#news">相关资讯</a></li>
+<li><a href="/#related">相关推荐</a></li>
+<li><a href="/#timeline">更新节奏</a></li>
+<li><a href="/#rank">检索热度榜</a></li>
+</ul>
+</div>
+<div class="aside-box">
+<h3>本周快照摘要</h3>
+<ul>
+<li>片目总量 <strong>1,284</strong><small>较上周 +37</small></li>
+<li>含 4K 字段 <strong>216</strong><small>占 16.8%</small></li>
+<li>独播条目 <strong>403</strong><small>截至 11-07</small></li>
+<li>待复核字幕 <strong>7</strong><small>其中 1 条为《煤谷》</small></li>
+</ul>
+</div>
+<div class="aside-box">
+<h3>平台入口</h3>
+<ul>
+<li><a href="/#featured">爱奇艺片名页</a><small>4K 需星钻</small></li>
+<li><a href="/#featured">腾讯视频片名页</a><small>VIP 层级</small></li>
+<li><a href="/#featured">优酷片名页</a><small>酷享会员</small></li>
+<li><a href="/#featured">哔哩哔哩纪录片</a><small>多为免费</small></li>
+<li><a href="/#featured">Netflix 中文字幕</a><small>按 IP 判断地区</small></li>
+<li><a href="/#featured">YouTube 影评频道</a><small>非正片</small></li>
+</ul>
+</div>
+</aside>
+</div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+<div class="wrap">
+<div class="footer-grid">
+<div>
+<div class="footer-brand">
+<svg viewBox="0 0 64 64" role="img" aria-label="在线视频搜索网站标志">
+<rect width="64" height="64" rx="14" fill="#22375f"/>
+<circle cx="28" cy="29" r="14" fill="none" stroke="#e0a812" stroke-width="5"/>
+<path d="M38 39l12 12" stroke="#e0a812" stroke-width="6" stroke-linecap="round"/>
+<path d="M23 23l12 6-12 6z" fill="#e0a812"/>
+</svg>
+<strong>在线视频搜索网站</strong>
+</div>
+<p>给每一部片找到它当前所在的正版平台、可看的清晰度、要不要会员。索引不定档期，不代替平台播放。</p>
+<p style="font-size:12px;color:#8595b6">快照更新时间：2026-11-07 06:00，对应「最新更新」板块的五条变更记录。</p>
+</div>
+<div>
+<h3>内容频道</h3>
+<ul>
+<li><a href="/#featured">国产剧集索引</a></li>
+<li><a href="/#featured">院线电影索引</a></li>
+<li><a href="/#featured">国产纪录片索引</a></li>
+<li><a href="/#featured">国创动画索引</a></li>
+<li><a href="/#featured">演唱会实录索引</a></li>
+</ul>
+</div>
+<div>
+<h3>使用帮助</h3>
+<ul>
+<li><a href="/#guide">四步检索流程</a></li>
+<li><a href="/#faq">清晰度与码率问题</a></li>
+<li><a href="/#faq">独播标签过期说明</a></li>
+<li><a href="/#timeline">快照更新节奏</a></li>
+<li><a href="/#rank">检索热度榜说明</a></li>
+</ul>
+</div>
+<div>
+<h3>关于数据</h3>
+<ul>
+<li><a href="/#overview">采集字段范围</a></li>
+<li><a href="/#news">版权窗口期动态</a></li>
+<li><a href="/#related">搜索词共现统计</a></li>
+<li><a href="/#comments">用户反馈汇总</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-note">
+<span>示例数据，片名、评分、播放量、搜索次数均为演示用途，不构成在售或可观看承诺。</span>
+<span>© 2026 在线视频搜索网站 索引示例 · 内容仅供检索方法参考</span>
+</div>
+</div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="回到顶部">回到顶部</button>
+
+<script>
+(function(){
+"use strict";
+
+/* 移动端菜单 */
+var toggle=document.getElementById('menuToggle');
+var nav=document.getElementById('headerNav');
+if(toggle&&nav){
+toggle.addEventListener('click',function(){
+var open=nav.classList.toggle('open');
+toggle.setAttribute('aria-expanded',open?'true':'false');
+});
+nav.addEventListener('click',function(e){
+if(e.target.tagName==='A'&&window.innerWidth<=720){
+nav.classList.remove('open');
+toggle.setAttribute('aria-expanded','false');
+}
+});
+}
+
+/* 本地搜索 */
+var form=document.getElementById('miniSearch');
+var input=document.getElementById('miniInput');
+var feedback=document.getElementById('searchFeedback');
+var searchIndex=[
+{key:'雾港十二时 4k 2160p 爱奇艺 腾讯视频',id:'featured'},
+{key:'稻谷公路 纪录片 b站 哔哩哔哩 1080p',id:'featured'},
+{key:'灯巷 优酷 netflix 片尾曲',id:'featured'},
+{key:'煤谷 腾讯视频 字幕 第14集',id:'updates'},
+{key:'深夜面包店 分集标题 北纬四十三',id:'updates'},
+{key:'清晰度 码率 4k 标签 对照',id:'deep'},
+{key:'全网独播 窗口期 版权 过期',id:'deep'},
+{key:'检索 年份 片名 四步',id:'guide'},
+{key:'星钻会员 vip 区别 付费层级',id:'faq'},
+{key:'检索热度榜 搜索次数 点进率',id:'rank'},
+{key:'快照 更新节奏 抓取 抽检',id:'timeline'},
+{key:'netflix 中文字幕 华语片',id:'news'},
+{key:'youtube 影评频道 订阅量',id:'news'},
+{key:'评论 用户反馈 字幕不同步',id:'comments'},
+{key:'分类 国产剧集 动画 纪录片',id:'cats'},
+{key:'索引 覆盖平台 片目总量',id:'overview'}
+];
+function doSearch(q){
+q=q.trim().toLowerCase();
+if(!q){feedback.classList.remove('on');feedback.textContent='';return;}
+var hit=null;
+for(var i=0;i<searchIndex.length;i++){
+var words=searchIndex[i].key.toLowerCase().split(/\s+/);
+for(var j=0;j<words.length;j++){
+if(words[j]&&q.indexOf(words[j])!==-1){hit=searchIndex[i];break;}
+}
+if(hit)break;
+}
+if(hit){
+feedback.classList.remove('on');
+feedback.textContent='';
+var target=document.getElementById(hit.id);
+if(target){
+target.scrollIntoView({behavior:'smooth',block:'start'});
+}
+}else{
+feedback.classList.add('on');
+feedback.textContent='没有匹配的条目。可试试「雾港十二时」「清晰度 码率」「独播 窗口期」或「星钻会员」。';
+}
+}
+if(form){
+form.addEventListener('submit',function(e){
+e.preventDefault();
+doSearch(input.value);
+});
+}
+
+/* 侧栏滚动高亮 */
+var navLinks=document.querySelectorAll('#asideNav a');
+var sections=[];
+navLinks.forEach(function(a){
+var href=a.getAttribute('href')||'';
+var id=href.replace('/#','');
+var el=document.getElementById(id);
+if(el)sections.push({el:el,a:a});
+});
+var ticking=false;
+function onScroll(){
+if(ticking)return;
+ticking=true;
+window.requestAnimationFrame(function(){
+var pos=window.scrollY+140;
+var current=null;
+sections.forEach(function(s){
+if(s.el.offsetTop<=pos)current=s;
+});
+navLinks.forEach(function(a){a.classList.remove('active');});
+if(current)current.a.classList.add('active');
+var btn=document.getElementById('toTop');
+if(window.scrollY>500){btn.classList.add('show');}else{btn.classList.remove('show');}
+ticking=false;
+});
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+
+/* 回到顶部 */
+var toTop=document.getElementById('toTop');
+if(toTop){
+toTop.addEventListener('click',function(){
+window.scrollTo({top:0,behavior:'smooth'});
+});
+}
+})();
+</script>
+
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebSite",
+"name":"在线视频搜索网站",
+"description":"多平台片源索引与检索指南，记录清晰度、付费层级与字幕字段。",
+"inLanguage":"zh-CN"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"FAQPage",
+"mainEntity":[
+{"@type":"Question","name":"《雾港十二时》在哪些平台能看 4K？","acceptedAnswer":{"@type":"Answer","text":"截至 11 月 7 日，爱奇艺提供 2160P，需星钻会员；腾讯视频最高 1080P。两个平台的 4K 标签并不通用。"}},
+{"@type":"Question","name":"为什么搜「煤谷」会出现字幕待复核的提示？","acceptedAnswer":{"@type":"Answer","text":"第 14 集字幕轨时间戳比台词晚约 1.22 秒，11 月 5 日 21:40 起有观众反馈，索引保留条目并加标记。"}},
+{"@type":"Question","name":"哔哩哔哩的《稻谷公路》算独播吗？","acceptedAnswer":{"@type":"Answer","text":"正片在 11 月 2 日前为独播。YouTube 上的是导演访谈，不是正片，独播状态仍成立，索引注明截至 11-02。"}},
+{"@type":"Question","name":"「全网独播」标签多久会过期？","acceptedAnswer":{"@type":"Answer","text":"没有固定周期。国产剧常见窗口期为 3 至 6 个月，纪录片与动画更短，索引每周六复核一次。"}},
+{"@type":"Question","name":"片名加年份搜索为什么更准？","acceptedAnswer":{"@type":"Answer","text":"同名条目集中在短片与翻拍作品。以「雾港」为例，单独检索命中 11 条，加上 2026 后只剩 2 条。"}},
+{"@type":"Question","name":"索引会不会收录网盘流传的片源？","acceptedAnswer":{"@type":"Answer","text":"不收录。条目只指向平台官方片名页，网盘、磁力与第三方压片版本不在采集范围。"}}
+]
+}
+</script>
+</body>
+  </html>
